@@ -44,5 +44,13 @@ export class DragonClan {
       console.log(`${index + 1}. ${dragon.getInfo()}`);
     });
   }
+
+  public displayCharacterDetails(): void {
+    console.log('\n--- Character Details ---\n');
+    this.dragons.forEach((dragon) => {
+      console.log(dragon.getCharacterInfo());
+      console.log('');
+    });
+  }
 }
 

@@ -30,3 +30,6 @@ clan.simulateInteractions(5);
 console.log('\n--- Clan Status ---\n');
 clan.displayStatus();
 
+// Display character details
+clan.displayCharacterDetails();
+
