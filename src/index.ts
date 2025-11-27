@@ -39,4 +39,3 @@ clan.displayRelationships();
 
 // Display relationship matrix
 clan.displayRelationshipMatrix();
-
