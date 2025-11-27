@@ -98,3 +98,28 @@ export function generateMultipleNames(count: number, element?: DragonElement): s
   return Array.from(names);
 }
 
+// Clan name components
+const clanAdjectives = [
+  'Fireborn', 'Storm', 'Ancient', 'Eternal', 'Shadow', 'Crystal', 'Thunder',
+  'Dragon', 'Mystic', 'Sacred', 'Frozen', 'Blazing', 'Golden', 'Silver',
+  'Iron', 'Steel', 'Frost', 'Flame', 'Wind', 'Earth', 'Lightning', 'Ice',
+  'Noble', 'Royal', 'Wild', 'Fierce', 'Mighty', 'Legendary', 'Divine',
+  'Dark', 'Bright', 'Savage', 'Wise', 'Bold', 'Swift', 'Strong'
+];
+
+const clanNouns = [
+  'Clan', 'Order', 'Brotherhood', 'Sisterhood', 'Guild', 'Circle', 'Council',
+  'Alliance', 'Legion', 'Guard', 'Keep', 'Tower', 'Sanctuary', 'Haven',
+  'Stronghold', 'Fortress', 'Realm', 'Domain', 'Tribe', 'Nation', 'Empire',
+  'Dynasty', 'House', 'Bloodline', 'Lineage', 'Horde', 'Flight', 'Wing'
+];
+
+/**
+ * Generates a random clan name
+ * @returns A randomly generated clan name in the format "The [Adjective] [Noun]"
+ */
+export function generateClanName(): string {
+  const adjective = clanAdjectives[Math.floor(Math.random() * clanAdjectives.length)];
+  const noun = clanNouns[Math.floor(Math.random() * clanNouns.length)];
+  return `The ${adjective} ${noun}`;
+}

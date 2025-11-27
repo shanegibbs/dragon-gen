@@ -2,6 +2,8 @@
 
 A 2D simulation game where you manage a clan of dragons. Play in your browser!
 
+[Play now!](https://shanegibbs.github.io/dragon-gen/)
+
 ## 🚀 Quick Start
 
 ### Development

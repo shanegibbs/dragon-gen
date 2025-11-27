@@ -1,7 +1,7 @@
 import './app.css';
 import { Dragon, DragonElement } from './dragon.js';
 import { DragonClan } from './clan.js';
-import { generateDragonName } from './nameGenerator.js';
+import { generateDragonName, generateClanName } from './nameGenerator.js';
 
 // Helper function to create a dragon with random name, element, and age
 function createRandomDragon(): Dragon {
@@ -18,7 +18,7 @@ function initApp() {
   if (!app) return;
 
   // Create a clan with some initial dragons
-  const clan = new DragonClan('The Fireborn Clan');
+  const clan = new DragonClan(generateClanName());
 
   // Add 6 dragons to the clan with randomly generated attributes
   for (let i = 0; i < 6; i++) {
@@ -58,6 +58,7 @@ function initApp() {
   `;
 
   // Render initial state
+  renderClanInfo(clan);
   renderDragons(clan);
   renderRelationships(clan);
 
@@ -75,6 +76,7 @@ function initApp() {
   document.getElementById('add-dragon-btn')?.addEventListener('click', () => {
     clan.addDragon(createRandomDragon());
     updateOutput(`Added new dragon: ${clan.getDragons()[clan.getDragons().length - 1].name}`);
+    renderClanInfo(clan);
     renderDragons(clan);
     renderRelationships(clan);
   });
@@ -82,12 +84,15 @@ function initApp() {
   document.getElementById('reset-btn')?.addEventListener('click', () => {
     if (confirm('Are you sure you want to reset the clan?')) {
       clan.clear();
+      // Generate a new clan name
+      clan.name = generateClanName();
       // Add 6 new dragons
       for (let i = 0; i < 6; i++) {
         clan.addDragon(createRandomDragon());
       }
       interactionCount = 0;
       updateOutput('Clan reset with new dragons');
+      renderClanInfo(clan);
       renderDragons(clan);
       renderRelationships(clan);
     }
@@ -99,6 +104,16 @@ function updateOutput(message: string) {
   if (output) {
     const timestamp = new Date().toLocaleTimeString();
     output.innerHTML = `<div class="output-message">[${timestamp}] ${message}</div>`;
+  }
+}
+
+function renderClanInfo(clan: DragonClan) {
+  const clanInfo = document.querySelector('.clan-info');
+  if (clanInfo) {
+    clanInfo.innerHTML = `
+      <h2>Clan: ${clan.name}</h2>
+      <p>Members: ${clan.getDragonCount()}</p>
+    `;
   }
 }
 
