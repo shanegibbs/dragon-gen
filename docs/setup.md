@@ -53,26 +53,34 @@ fnm use
 npm install
 ```
 
-## Running the Game
+## Running the Game (CLI Mode)
 
 ```bash
 # Build the TypeScript code
-npm run build
+npm run build:cli
 
 # Run the simulation
-npm start
+npm run start:cli
 ```
 
-## Development Mode
+## Development Mode (CLI)
 
 ```bash
 # Watch for changes and auto-rebuild
-npm run dev
+npm run dev:cli
 ```
 
 ## Available Scripts
 
-- `npm run build` - Compile TypeScript to JavaScript
-- `npm start` - Run the compiled game
-- `npm run dev` - Watch mode: auto-rebuild and restart on changes
+### Console/CLI Mode
+- `npm run build:cli` - Compile TypeScript to JavaScript
+- `npm run start:cli` - Run the compiled game
+- `npm run dev:cli` - Watch mode: auto-rebuild and restart on changes
 - `npm run clean` - Remove the dist/ directory
+
+### Web Development
+- `npm run dev` - Start Vite dev server (http://localhost:3000)
+- `npm run build` - Build for web deployment
+- `npm run preview` - Preview production build
+
+See [web-deployment.md](web-deployment.md) for more details on web deployment.

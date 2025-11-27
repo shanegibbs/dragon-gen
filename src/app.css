@@ -1,0 +1,292 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: #2563eb;
+  --secondary-color: #64748b;
+  --danger-color: #dc2626;
+  --bg-color: #0f172a;
+  --surface-color: #1e293b;
+  --text-color: #f1f5f9;
+  --text-muted: #94a3b8;
+  --border-color: #334155;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.clan-info {
+  background: var(--surface-color);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-color);
+}
+
+.clan-info h2 {
+  margin-bottom: 0.5rem;
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: white;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  background: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-secondary {
+  background: var(--secondary-color);
+}
+
+.btn-secondary:hover {
+  background: #475569;
+}
+
+.btn-danger {
+  background: var(--danger-color);
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+}
+
+.output {
+  background: var(--surface-color);
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-color);
+  min-height: 3rem;
+}
+
+.output-message {
+  color: var(--text-muted);
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+}
+
+.dragons-section,
+.relationships-section {
+  margin-bottom: 3rem;
+}
+
+.dragons-section h2,
+.relationships-section h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.dragons-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.dragon-card {
+  background: var(--surface-color);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dragon-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.dragon-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.dragon-header h3 {
+  font-size: 1.25rem;
+  color: var(--text-color);
+}
+
+.element-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.element-fire { background: #ef4444; color: white; }
+.element-water { background: #3b82f6; color: white; }
+.element-earth { background: #84cc16; color: white; }
+.element-wind { background: #06b6d4; color: white; }
+.element-lightning { background: #fbbf24; color: white; }
+.element-ice { background: #60a5fa; color: white; }
+
+.dragon-info {
+  margin-bottom: 1rem;
+}
+
+.dragon-info p {
+  margin-bottom: 0.5rem;
+  color: var(--text-muted);
+}
+
+.dragon-details {
+  margin-top: 1rem;
+}
+
+.dragon-details summary {
+  cursor: pointer;
+  color: var(--primary-color);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.dragon-details pre {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  overflow-x: auto;
+  color: var(--text-muted);
+}
+
+.relationship-matrix {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface-color);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.relationship-matrix th {
+  background: var(--bg-color);
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  border: 1px solid var(--border-color);
+}
+
+.relationship-matrix td {
+  padding: 0.75rem;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  transition: background 0.2s;
+}
+
+.relationship-matrix td.self {
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--text-muted);
+}
+
+.relationship-matrix td.positive {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--success-color);
+  font-weight: 600;
+}
+
+.relationship-matrix td.negative {
+  background: rgba(220, 38, 38, 0.2);
+  color: var(--danger-color);
+  font-weight: 600;
+}
+
+.relationship-matrix td.neutral {
+  color: var(--text-muted);
+}
+
+.relationship-matrix td:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  header h1 {
+    font-size: 2rem;
+  }
+
+  .dragons-list {
+    grid-template-columns: 1fr;
+  }
+
+  .relationship-matrix {
+    font-size: 0.85rem;
+  }
+
+  .relationship-matrix th,
+  .relationship-matrix td {
+    padding: 0.5rem;
+  }
+}
+
