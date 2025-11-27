@@ -20,6 +20,19 @@ export class DragonClan {
     return [...this.dragons]; // Return a copy
   }
 
+  public removeDragon(dragon: Dragon): boolean {
+    const index = this.dragons.indexOf(dragon);
+    if (index > -1) {
+      this.dragons.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
+
+  public clear(): void {
+    this.dragons = [];
+  }
+
   public simulateInteractions(count: number): void {
     if (this.dragons.length < 2) {
       console.log('Not enough dragons for interactions!');
