@@ -1,4 +1,5 @@
 import { DragonElement } from './dragon.js';
+import { DragonValues, generateDragonValues, calculateValueAlignment } from './values.js';
 
 /**
  * Character traits that determine how a dragon behaves and interacts
@@ -41,8 +42,13 @@ export interface CharacterPreferences {
 export class DragonCharacter {
   public traits: CharacterTraits;
   public preferences: CharacterPreferences;
+  public values: DragonValues;
 
-  constructor(traits?: Partial<CharacterTraits>, preferences?: Partial<CharacterPreferences>) {
+  constructor(
+    traits?: Partial<CharacterTraits>,
+    preferences?: Partial<CharacterPreferences>,
+    values?: DragonValues
+  ) {
     this.traits = {
       friendliness: traits?.friendliness ?? this.randomTrait(),
       aggression: traits?.aggression ?? this.randomTrait(),
@@ -59,6 +65,8 @@ export class DragonCharacter {
       preferredTraits: preferences?.preferredTraits ?? [],
       dislikedTraits: preferences?.dislikedTraits ?? [],
     };
+
+    this.values = values ?? generateDragonValues();
   }
 
   /**
@@ -75,6 +83,7 @@ export class DragonCharacter {
   /**
    * Calculates compatibility score with another dragon's character
    * Returns a value from -100 (very incompatible) to 100 (very compatible)
+   * Now includes value alignment in the calculation
    */
   public getCompatibilityWith(other: DragonCharacter, otherElement: DragonElement): number {
     let score = 0;
@@ -128,6 +137,10 @@ export class DragonCharacter {
       }
     }
 
+    // Value alignment (30% weight of compatibility)
+    const valueAlignment = calculateValueAlignment(this.values, other.values);
+    score += valueAlignment * 0.3; // Values contribute 30% to overall compatibility
+
     // Normalize to -100 to 100 range
     return Math.max(-100, Math.min(100, score));
   }
@@ -156,6 +169,7 @@ export function generateRandomCharacter(element?: DragonElement): DragonCharacte
     preferredTraits: [],
     dislikedTraits: [],
   };
+  const values = generateDragonValues(element);
 
   // Element-based character adjustments
   if (element) {
@@ -197,6 +211,6 @@ export function generateRandomCharacter(element?: DragonElement): DragonCharacte
     }
   }
 
-  return new DragonCharacter(traits, preferences);
+  return new DragonCharacter(traits, preferences, values);
 }
 

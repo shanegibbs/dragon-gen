@@ -11,62 +11,46 @@ This guide covers setting up your development environment for the Dragon Clan Si
 
 This project uses **fnm (Fast Node Manager)** for Node.js version management.
 
-**fnm is already installed!** It's configured in your `~/.bashrc` and will automatically load in new terminals.
+### Installing fnm (if not already installed)
+
+If fnm is not installed on your system, install it with:
+
+```bash
+curl -fsSL https://fnm.vercel.app/install | bash
+```
+
+After installation, either:
+- Open a new terminal (fnm will auto-load), or
+- Run `source ~/.bashrc` to load fnm in the current terminal
 
 ### Quick Start
 
 ```bash
 # In a new terminal, fnm will auto-load
 # Just navigate to the project and use the correct Node version
-cd /home/shane/dev/gen
+cd /path/to/dragon-gen
 fnm use          # Uses Node 20 from .nvmrc
+```
 
-# Or use the helper script
-source setup-env.sh
+If Node.js 20 is not installed yet, fnm will prompt you to install it, or you can run:
+```bash
+fnm install 20
+fnm use
 ```
 
 ### Manual Setup (if needed in current shell)
 
 ```bash
-export PATH="/home/shane/.local/share/fnm:$PATH"
+export PATH="$HOME/.local/share/fnm:$PATH"
 eval "$(fnm env)"
 fnm use
 ```
-
-### Alternative: nvm (Node Version Manager)
-
-```bash
-# Install nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-
-# Use the project's Node version
-nvm use
-```
-
-### Alternative: Volta
-
-Automatic version switching per project.
-
-```bash
-# Install Volta
-curl https://get.volta.sh | bash
-
-# Volta will automatically use the version from .node-version
-```
-
-The project includes `.nvmrc` and `.node-version` files for automatic version detection.
 
 ## Installation
 
 ```bash
 # Using npm (default)
 npm install
-
-# Or using pnpm (faster, more efficient)
-pnpm install
-
-# Or using yarn
-yarn install
 ```
 
 ## Running the Game
@@ -92,4 +76,3 @@ npm run dev
 - `npm start` - Run the compiled game
 - `npm run dev` - Watch mode: auto-rebuild and restart on changes
 - `npm run clean` - Remove the dist/ directory
-

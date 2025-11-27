@@ -15,7 +15,7 @@ function createRandomDragon(): Dragon {
 const clan = new DragonClan('The Fireborn Clan');
 
 // Add 12 dragons to the clan with randomly generated attributes
-for (let i = 0; i < 12; i++) {
+for (let i = 0; i < 6; i++) {
   clan.addDragon(createRandomDragon());
 }
 
@@ -25,7 +25,7 @@ console.log(`Members: ${clan.getDragonCount()}\n`);
 
 // Simulate some interactions
 console.log('--- Dragon Interactions ---\n');
-clan.simulateInteractions(1000);
+clan.simulateInteractions(50);
 
 // Display clan status
 console.log('\n--- Clan Status ---\n');

@@ -4,7 +4,7 @@ A 2D simulation game where you manage a clan of dragons. Starting simple with co
 
 ## Getting Started
 
-See [setup.md](setup.md) for detailed development setup instructions, including:
+See [docs/setup.md](docs/setup.md) for detailed development setup instructions, including:
 - Node.js version management (fnm)
 - Installation steps
 - Running the game

@@ -115,6 +115,42 @@ Based on their trait combinations, dragons exhibit one of six interaction styles
 - **Behavior**: Exploratory, inquisitive, discovery-focused
 - **Interactions**: Enjoys exploring and discovering together
 
+## Internal Value System
+
+Each dragon has an internal value system that represents their core principles and beliefs. These values guide their decisions, judgments, and moral framework. Unlike personality traits (which describe *how* a dragon behaves), values describe *what* a dragon believes in and prioritizes.
+
+### Core Values (0-100 scale)
+
+1. **Honor**: Commitment to integrity, keeping promises, and maintaining personal dignity
+2. **Freedom**: Value for independence, autonomy, and resistance to constraints
+3. **Tradition**: Respect for established customs, ancestral wisdom, and maintaining the old ways
+4. **Growth**: Belief in progress, learning, self-improvement, and embracing change
+5. **Community**: Prioritizing the collective good, cooperation, and clan welfare over individual interests
+6. **Achievement**: Value for personal success, recognition, and demonstrating capability
+7. **Harmony**: Value for balance, peace, avoiding conflict, and maintaining equilibrium
+8. **Power**: Value for strength, influence, and the ability to affect outcomes
+9. **Wisdom**: Value for knowledge, understanding, and making well-considered decisions
+10. **Protection**: Value for caring for others, defending the vulnerable, and ensuring safety
+
+### Element-Based Value Tendencies
+
+Each dragon element influences their base values:
+
+- **🔥 Fire Dragons**: Higher Power (+20), Higher Achievement (+15), Lower Harmony (-15)
+- **💧 Water Dragons**: Higher Harmony (+20), Higher Protection (+15), Higher Wisdom (+10)
+- **🌍 Earth Dragons**: Higher Tradition (+25), Higher Honor (+15), Lower Growth (-15)
+- **💨 Wind Dragons**: Higher Freedom (+25), Higher Growth (+20), Lower Tradition (-15)
+- **⚡ Lightning Dragons**: Higher Achievement (+20), Higher Power (+15), Lower Harmony (-15)
+- **❄️ Ice Dragons**: Higher Wisdom (+25), Higher Harmony (+15), Lower Community (-15)
+
+### Value Alignment
+
+Dragons with aligned values form stronger bonds, while conflicting values can create tension:
+
+- **Complementary values**: Similar high values in areas like Honor, Tradition, Community, or Harmony create positive alignment
+- **Conflicting values**: Opposing high values (e.g., Freedom vs Community, Tradition vs Growth, Power vs Harmony) reduce alignment
+- **Value alignment** contributes 30% to overall compatibility between dragons
+
 ## Compatibility System
 
 Dragons have compatibility scores with each other based on multiple factors:
@@ -143,7 +179,28 @@ Dragons have compatibility scores with each other based on multiple factors:
 - **Preferred traits** (when other dragon has > 60): +10 compatibility
 - **Disliked traits** (when other dragon has > 60): -15 compatibility
 
+### Value Alignment
+- Dragons with aligned values have higher compatibility
+- **Value alignment** contributes 30% to overall compatibility score
+- Complementary values (e.g., both high Honor, both high Community) increase alignment
+- Conflicting values (e.g., high Freedom vs high Community) decrease alignment
+
 ## How Interactions Work
+
+### Value-Based Interactions
+
+When dragons share high values, special interactions can occur:
+
+- **High Honor (both > 70)**: "They make a solemn promise together - their shared honor creates a bond" (+10-15 opinion)
+- **High Community (both > 70)**: "They work together for the clan's benefit - their shared values strengthen their bond" (+8-12 opinion)
+- **High Harmony (both > 70)**: "They seek peaceful resolution to a disagreement - their shared value for harmony prevails" (+6-9 opinion)
+- **High Wisdom (both > 70)**: "They engage in deep philosophical discussion - their shared wisdom creates understanding" (+7-10 opinion)
+
+Value conflicts can also create specific interactions:
+
+- **Freedom vs Community**: "They disagree on priorities - individual freedom vs collective good" (-5 opinion)
+- **Tradition vs Growth**: "They debate the value of tradition versus progress" (-4 opinion)
+- **Power vs Harmony**: "They clash over approaches - one seeks influence, the other seeks peace" (-6 opinion)
 
 ### Compatibility Ranges
 
@@ -173,6 +230,7 @@ Dragons have compatibility scores with each other based on multiple factors:
 - **Positive existing opinion**: Makes positive interactions more likely and impactful
 - **Negative existing opinion**: Makes negative interactions more likely
 - **Opinion modifier**: Existing relationship affects compatibility by up to ±30 points
+- **Value alignment modifier**: Value alignment affects compatibility by up to ±20 points
 
 ## Relationship Building
 
@@ -229,12 +287,15 @@ Over many interactions, relationships stabilize:
 
 ## Summary
 
-The personality system creates unique, dynamic relationships between dragons:
-- Each dragon has distinct traits and preferences
-- Elements influence base personality tendencies
+The personality and value system creates unique, dynamic relationships between dragons:
+- Each dragon has distinct traits, preferences, and values
+- Elements influence base personality tendencies and values
+- Compatibility is determined by traits, preferences, and value alignment
+- Value alignment contributes 30% to overall compatibility
+- Special value-based interactions occur when dragons share or conflict in values
 - Compatibility determines interaction quality
 - Relationships evolve and stabilize over time
-- Interactions reflect personality differences and similarities
+- Interactions reflect personality differences, similarities, and value alignment
 
-This creates a rich social simulation where dragons form friendships, rivalries, and everything in between based on their individual personalities and how they interact over time.
+This creates a rich social simulation where dragons form friendships, rivalries, and everything in between based on their individual personalities, values, and how they interact over time.
 
