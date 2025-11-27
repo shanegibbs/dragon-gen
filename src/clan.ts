@@ -33,10 +33,12 @@ export class DragonClan {
     this.dragons = [];
   }
 
-  public simulateInteractions(count: number): void {
+  public simulateInteractions(count: number): Array<{ description: string; dragon1: Dragon; dragon2: Dragon; opinionChange: number }> {
+    const interactions: Array<{ description: string; dragon1: Dragon; dragon2: Dragon; opinionChange: number }> = [];
+    
     if (this.dragons.length < 2) {
       console.log('Not enough dragons for interactions!');
-      return;
+      return interactions;
     }
 
     for (let i = 0; i < count; i++) {
@@ -55,9 +57,19 @@ export class DragonClan {
       const otherPerspectiveChange = Math.round(result.opinionChange * (0.8 + Math.random() * 0.4)); // 80-120% of original
       dragon2.updateOpinionFromInteraction(dragon1, result.description, otherPerspectiveChange);
       
+      // Store the interaction
+      interactions.push({
+        description: result.description,
+        dragon1,
+        dragon2,
+        opinionChange: result.opinionChange
+      });
+      
       // Display the interaction
       console.log(`[${i + 1}] ${result.description}`);
     }
+    
+    return interactions;
   }
 
   public displayStatus(): void {

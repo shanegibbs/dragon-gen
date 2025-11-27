@@ -32,27 +32,38 @@ function initApp() {
         <h1>🐉 Dragon Clan Simulator</h1>
       </header>
       
-      <div class="clan-info">
-        <h2>Clan: ${clan.name}</h2>
-        <p>Members: ${clan.getDragonCount()}</p>
-      </div>
+      <div class="main-layout">
+        <div class="main-content">
+          <div class="clan-info">
+            <h2>Clan: ${clan.name}</h2>
+            <p>Members: ${clan.getDragonCount()}</p>
+          </div>
 
-      <div class="controls">
-        <button id="simulate-btn" class="btn btn-primary">Simulate 10 Interactions</button>
-        <button id="add-dragon-btn" class="btn btn-secondary">Add Random Dragon</button>
-        <button id="reset-btn" class="btn btn-danger">Reset Clan</button>
-      </div>
+          <div class="controls">
+            <button id="simulate-btn" class="btn btn-primary">Simulate 10 Interactions</button>
+            <button id="auto-simulate-btn" class="btn btn-secondary">Start Auto-Simulate</button>
+            <button id="add-dragon-btn" class="btn btn-secondary">Add Random Dragon</button>
+            <button id="reset-btn" class="btn btn-danger">Reset Clan</button>
+          </div>
+          
+          <div class="dragons-section">
+            <h2>Dragons</h2>
+            <div id="dragons-list" class="dragons-list"></div>
+          </div>
 
-      <div id="output" class="output"></div>
-      
-      <div class="dragons-section">
-        <h2>Dragons</h2>
-        <div id="dragons-list" class="dragons-list"></div>
-      </div>
+          <div class="relationships-section">
+            <h2>Relationships</h2>
+            <div id="relationships-list" class="relationships-list"></div>
+          </div>
+        </div>
 
-      <div class="relationships-section">
-        <h2>Relationships</h2>
-        <div id="relationships-list" class="relationships-list"></div>
+        <div class="event-log-panel">
+          <div class="event-log-header">
+            <h2>Event Log</h2>
+            <button id="clear-log-btn" class="btn btn-secondary btn-small">Clear</button>
+          </div>
+          <div id="event-log" class="event-log"></div>
+        </div>
       </div>
     </div>
   `;
@@ -61,21 +72,112 @@ function initApp() {
   renderClanInfo(clan);
   renderDragons(clan);
   renderRelationships(clan);
+  
+  // Add initial event log entry
+  addEventLogEntry(`Clan "${clan.name}" initialized with ${clan.getDragonCount()} dragons`, 'info');
 
   // Event listeners
   let interactionCount = 0;
+  let autoSimulateInterval: number | null = null;
+  let isAutoSimulating = false;
+
+  function triggerSingleInteraction() {
+    if (clan.getDragonCount() < 2) {
+      addEventLogEntry('Not enough dragons for interactions!', 'info');
+      stopAutoSimulate();
+      return;
+    }
+
+    const interactions = clan.simulateInteractions(1);
+    interactionCount += 1;
+    
+    if (interactions.length > 0) {
+      const interaction = interactions[0];
+      addEventLogEntry(interaction.description, 'interaction');
+      renderDragons(clan);
+      renderRelationships(clan);
+    }
+  }
+
+  function startAutoSimulate() {
+    if (isAutoSimulating) return;
+    
+    isAutoSimulating = true;
+    const autoSimulateBtn = document.getElementById('auto-simulate-btn');
+    if (autoSimulateBtn) {
+      autoSimulateBtn.textContent = 'Stop Auto-Simulate';
+      autoSimulateBtn.classList.remove('btn-secondary');
+      autoSimulateBtn.classList.add('btn-danger');
+    }
+    
+    addEventLogEntry('Auto-simulation started', 'action');
+    
+    // Schedule the first interaction
+    scheduleNextInteraction();
+  }
+
+  function stopAutoSimulate() {
+    if (!isAutoSimulating) return;
+    
+    isAutoSimulating = false;
+    if (autoSimulateInterval !== null) {
+      clearTimeout(autoSimulateInterval);
+      autoSimulateInterval = null;
+    }
+    
+    const autoSimulateBtn = document.getElementById('auto-simulate-btn');
+    if (autoSimulateBtn) {
+      autoSimulateBtn.textContent = 'Start Auto-Simulate';
+      autoSimulateBtn.classList.remove('btn-danger');
+      autoSimulateBtn.classList.add('btn-secondary');
+    }
+    
+    addEventLogEntry('Auto-simulation stopped', 'action');
+  }
+
+  function scheduleNextInteraction() {
+    if (!isAutoSimulating) return;
+    
+    // Random delay between 3-10 seconds (3000-10000ms)
+    const delay = 3000 + Math.random() * 7000;
+    
+    autoSimulateInterval = window.setTimeout(() => {
+      triggerSingleInteraction();
+      if (isAutoSimulating) {
+        scheduleNextInteraction();
+      }
+    }, delay);
+  }
+
   document.getElementById('simulate-btn')?.addEventListener('click', () => {
     const count = 10;
-    clan.simulateInteractions(count);
+    const interactions = clan.simulateInteractions(count);
     interactionCount += count;
-    updateOutput(`Simulated ${interactionCount} total interactions`);
+    
+    // Add each interaction to the event log
+    interactions.forEach(interaction => {
+      addEventLogEntry(interaction.description, 'interaction');
+    });
+    
+    // Add summary
+    addEventLogEntry(`Simulated ${count} interactions (${interactionCount} total)`, 'action');
+    
     renderDragons(clan);
     renderRelationships(clan);
   });
 
+  document.getElementById('auto-simulate-btn')?.addEventListener('click', () => {
+    if (isAutoSimulating) {
+      stopAutoSimulate();
+    } else {
+      startAutoSimulate();
+    }
+  });
+
   document.getElementById('add-dragon-btn')?.addEventListener('click', () => {
-    clan.addDragon(createRandomDragon());
-    updateOutput(`Added new dragon: ${clan.getDragons()[clan.getDragons().length - 1].name}`);
+    const newDragon = createRandomDragon();
+    clan.addDragon(newDragon);
+    addEventLogEntry(`Added new dragon: ${newDragon.name} (${newDragon.element})`, 'action');
     renderClanInfo(clan);
     renderDragons(clan);
     renderRelationships(clan);
@@ -83,6 +185,7 @@ function initApp() {
 
   document.getElementById('reset-btn')?.addEventListener('click', () => {
     if (confirm('Are you sure you want to reset the clan?')) {
+      stopAutoSimulate();
       clan.clear();
       // Generate a new clan name
       clan.name = generateClanName();
@@ -91,20 +194,46 @@ function initApp() {
         clan.addDragon(createRandomDragon());
       }
       interactionCount = 0;
-      updateOutput('Clan reset with new dragons');
+      addEventLogEntry(`Clan reset: ${clan.name} with ${clan.getDragonCount()} new dragons`, 'action');
       renderClanInfo(clan);
       renderDragons(clan);
       renderRelationships(clan);
     }
   });
+
+  document.getElementById('clear-log-btn')?.addEventListener('click', () => {
+    const eventLog = document.getElementById('event-log');
+    if (eventLog) {
+      eventLog.innerHTML = '';
+    }
+  });
+
+  // Start auto-simulation by default
+  startAutoSimulate();
 }
 
-function updateOutput(message: string) {
-  const output = document.getElementById('output');
-  if (output) {
-    const timestamp = new Date().toLocaleTimeString();
-    output.innerHTML = `<div class="output-message">[${timestamp}] ${message}</div>`;
+function addEventLogEntry(message: string, type: 'interaction' | 'info' | 'action' = 'info') {
+  const eventLog = document.getElementById('event-log');
+  if (!eventLog) return;
+
+  const timestamp = new Date().toLocaleTimeString();
+  const entry = document.createElement('div');
+  entry.className = `event-log-entry event-log-${type}`;
+  entry.innerHTML = `
+    <span class="event-time">[${timestamp}]</span>
+    <span class="event-message">${message}</span>
+  `;
+  
+  // Add to top of log
+  eventLog.insertBefore(entry, eventLog.firstChild);
+  
+  // Limit log to 100 entries
+  while (eventLog.children.length > 100) {
+    eventLog.removeChild(eventLog.lastChild!);
   }
+  
+  // Auto-scroll to top
+  eventLog.scrollTop = 0;
 }
 
 function renderClanInfo(clan: DragonClan) {
