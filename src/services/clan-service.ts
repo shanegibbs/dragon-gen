@@ -1,4 +1,14 @@
-import { ClanService as WasmClanService, DragonInfo, DragonElement, InteractionEvent, ClanStats, initWasm } from '../wasm-wrapper.js';
+import { 
+  ClanService as WasmClanService, 
+  DragonInfo, 
+  DragonElement, 
+  InteractionEvent, 
+  ClanStats, 
+  initWasm,
+  EventType,
+  subscribeToEvent,
+  unsubscribeFromEvent,
+} from '../wasm-wrapper.js';
 
 /**
  * Event types that can be emitted by the ClanService
@@ -110,6 +120,7 @@ export class ClanService implements IClanService {
   private wasmService!: WasmClanService; // Initialized in initialize()
   private initialized = false;
   private eventListeners: Map<ClanServiceEvent['type'], Set<ClanServiceEventListener>> = new Map();
+  private rustEventCallbacks: Map<typeof EventType[keyof typeof EventType], (event: any) => void> = new Map();
 
   /**
    * Initialize WASM and the service
@@ -122,11 +133,75 @@ export class ClanService implements IClanService {
     try {
       await initWasm();
       this.wasmService = new WasmClanService();
+      this.setupRustEventSubscriptions();
       this.initialized = true;
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
       this.emit({ type: 'error', message: 'Failed to initialize WASM', error: err });
       throw err;
+    }
+  }
+
+  /**
+   * Set up subscriptions to Rust events and forward them to TypeScript listeners
+   */
+  private setupRustEventSubscriptions(): void {
+    // Map Rust event types to TypeScript event types
+    const eventMappings: Array<{ rust: typeof EventType[keyof typeof EventType]; ts: ClanServiceEvent['type'] }> = [
+      { rust: EventType.ClanCreated, ts: 'clan-created' },
+      { rust: EventType.DragonAdded, ts: 'dragon-added' },
+      { rust: EventType.DragonRemoved, ts: 'dragon-removed' },
+      { rust: EventType.InteractionSimulated, ts: 'interaction-simulated' },
+      { rust: EventType.ClanReset, ts: 'clan-reset' },
+    ];
+
+    for (const mapping of eventMappings) {
+      const callback = (rustEvent: any) => {
+        // Convert Rust event format to TypeScript event format
+        let tsEvent: ClanServiceEvent;
+        
+        switch (mapping.ts) {
+          case 'clan-created':
+            tsEvent = {
+              type: 'clan-created',
+              clanName: rustEvent.clanName || '',
+              dragonCount: rustEvent.dragonCount || 0,
+            };
+            break;
+          case 'dragon-added':
+            tsEvent = {
+              type: 'dragon-added',
+              dragon: rustEvent.dragon,
+            };
+            break;
+          case 'dragon-removed':
+            tsEvent = {
+              type: 'dragon-removed',
+              dragonName: rustEvent.dragonName || '',
+            };
+            break;
+          case 'interaction-simulated':
+            tsEvent = {
+              type: 'interaction-simulated',
+              event: rustEvent.event,
+            };
+            break;
+          case 'clan-reset':
+            tsEvent = {
+              type: 'clan-reset',
+              clanName: rustEvent.clanName || '',
+              dragonCount: rustEvent.dragonCount || 0,
+            };
+            break;
+          default:
+            return; // Unknown event type
+        }
+        
+        this.emit(tsEvent);
+      };
+      
+      this.rustEventCallbacks.set(mapping.rust, callback);
+      subscribeToEvent(mapping.rust, callback);
     }
   }
 
@@ -140,14 +215,7 @@ export class ClanService implements IClanService {
 
     try {
       this.wasmService.createClan(initialDragonCount);
-      const stats = this.wasmService.getClanStats();
-      if (stats) {
-        this.emit({
-          type: 'clan-created',
-          clanName: stats.name,
-          dragonCount: stats.dragonCount,
-        });
-      }
+      // Event is emitted by Rust code
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
       this.emit({ type: 'error', message: 'Failed to create clan', error: err });
@@ -178,7 +246,7 @@ export class ClanService implements IClanService {
       if (!dragon) {
         throw new Error('Failed to add dragon');
       }
-      this.emit({ type: 'dragon-added', dragon });
+      // Event is emitted by Rust code
       return dragon;
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
@@ -196,7 +264,7 @@ export class ClanService implements IClanService {
       if (!dragon) {
         throw new Error('Failed to add dragon');
       }
-      this.emit({ type: 'dragon-added', dragon });
+      // Event is emitted by Rust code
       return dragon;
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
@@ -210,11 +278,8 @@ export class ClanService implements IClanService {
    */
   async removeDragon(index: number): Promise<boolean> {
     try {
-      const dragon = this.wasmService.getDragon(index);
       const success = this.wasmService.removeDragon(index);
-      if (success && dragon) {
-        this.emit({ type: 'dragon-removed', dragonName: dragon.name });
-      }
+      // Event is emitted by Rust code
       return success;
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
@@ -229,9 +294,7 @@ export class ClanService implements IClanService {
   async simulateInteraction(): Promise<InteractionEvent | null> {
     try {
       const event = this.wasmService.simulateInteraction();
-      if (event) {
-        this.emit({ type: 'interaction-simulated', event });
-      }
+      // Event is emitted by Rust code
       return event;
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
@@ -246,9 +309,7 @@ export class ClanService implements IClanService {
   async simulateInteractions(count: number): Promise<InteractionEvent[]> {
     try {
       const events = this.wasmService.simulateInteractions(count);
-      events.forEach(event => {
-        this.emit({ type: 'interaction-simulated', event });
-      });
+      // Events are emitted by Rust code
       return events;
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
@@ -263,14 +324,7 @@ export class ClanService implements IClanService {
   async resetClan(initialDragonCount: number = 6): Promise<void> {
     try {
       this.wasmService.resetClan(initialDragonCount);
-      const stats = this.wasmService.getClanStats();
-      if (stats) {
-        this.emit({
-          type: 'clan-reset',
-          clanName: stats.name,
-          dragonCount: stats.dragonCount,
-        });
-      }
+      // Event is emitted by Rust code
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
       this.emit({ type: 'error', message: 'Failed to reset clan', error: err });
@@ -324,6 +378,16 @@ export class ClanService implements IClanService {
     if (listeners) {
       listeners.delete(listener);
     }
+  }
+
+  /**
+   * Cleanup: unsubscribe from Rust events
+   */
+  private cleanup(): void {
+    for (const [eventType, callback] of this.rustEventCallbacks.entries()) {
+      unsubscribeFromEvent(eventType, callback);
+    }
+    this.rustEventCallbacks.clear();
   }
 
   /**

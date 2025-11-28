@@ -6,6 +6,9 @@ import init, {
   ClanStats as WasmClanStats,
   generate_dragon_name as wasmGenerateDragonName,
   generate_clan_name as wasmGenerateClanName,
+  EventType as WasmEventType,
+  subscribe_to_event as wasmSubscribeToEvent,
+  unsubscribe_from_event as wasmUnsubscribeFromEvent,
 } from '../rust/pkg/dragon_gen.js';
 
 let wasmInitialized = false;
@@ -221,5 +224,35 @@ export function generateClanName(): string {
   } catch (error) {
     console.error('Error generating clan name:', error);
     return 'The Dragon Clan';
+  }
+}
+
+// Event type enum (matches Rust EventType)
+// The WASM bindings export EventType as an object with numeric values
+export const EventType = WasmEventType;
+
+/**
+ * Subscribe to events from the Rust notification system
+ * @param eventType The type of event to subscribe to (from EventType enum)
+ * @param callback Function to call when the event is emitted
+ */
+export function subscribeToEvent(eventType: WasmEventType, callback: (event: any) => void): void {
+  try {
+    wasmSubscribeToEvent(eventType, callback);
+  } catch (error) {
+    console.error('Error subscribing to event:', error);
+  }
+}
+
+/**
+ * Unsubscribe from events from the Rust notification system
+ * @param eventType The type of event to unsubscribe from (from EventType enum)
+ * @param callback The callback function to remove
+ */
+export function unsubscribeFromEvent(eventType: WasmEventType, callback: (event: any) => void): void {
+  try {
+    wasmUnsubscribeFromEvent(eventType, callback);
+  } catch (error) {
+    console.error('Error unsubscribing from event:', error);
   }
 }

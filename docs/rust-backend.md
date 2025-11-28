@@ -16,6 +16,8 @@ The Rust backend consists of several modules that handle different aspects of th
 - **`relationship.rs`** - Relationship state and opinion tracking
 - **`clan.rs`** - Clan management and interaction simulation
 - **`name_generator.rs`** - Name generation for dragons and clans
+- **`notification.rs`** - Generic notification system for emitting events to JavaScript
+- **`clan_service.rs`** - Service layer that exposes clan operations via WASM
 
 ### WASM Bindings
 

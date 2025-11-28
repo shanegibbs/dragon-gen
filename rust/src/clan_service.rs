@@ -2,6 +2,7 @@ use wasm_bindgen::prelude::*;
 use crate::dragon::{Dragon, DragonElement};
 use crate::clan::DragonClan;
 use crate::name_generator::generate_clan_name;
+use crate::notification;
 use rand::Rng;
 
 /// Read-only dragon information exposed to TypeScript
@@ -131,7 +132,7 @@ impl ClanService {
     /// Create a new clan with random name and initial dragons
     pub fn create_clan(&mut self, initial_dragon_count: usize) {
         let clan_name = generate_clan_name();
-        let mut clan = DragonClan::new(clan_name);
+        let mut clan = DragonClan::new(clan_name.clone());
 
         // Add initial dragons
         for _ in 0..initial_dragon_count {
@@ -140,6 +141,13 @@ impl ClanService {
         }
 
         self.clan = Some(clan);
+
+        // Emit event
+        let event_data = js_sys::Object::new();
+        js_sys::Reflect::set(&event_data, &"type".into(), &"clan-created".into()).unwrap();
+        js_sys::Reflect::set(&event_data, &"clanName".into(), &clan_name.into()).unwrap();
+        js_sys::Reflect::set(&event_data, &"dragonCount".into(), &(initial_dragon_count as u32).into()).unwrap();
+        crate::notification::get_notification_service().emit(crate::notification::EventType::ClanCreated, &event_data.into());
     }
 
     /// Get clan statistics
@@ -193,22 +201,55 @@ impl ClanService {
         let dragon = Self::create_random_dragon();
         let dragon_info = DragonInfo::from_dragon(&dragon);
         clan.add_dragon(dragon);
+        
+        // Emit event
+        let event_data = js_sys::Object::new();
+        js_sys::Reflect::set(&event_data, &"type".into(), &"dragon-added".into()).unwrap();
+        js_sys::Reflect::set(&event_data, &"dragon".into(), &Self::dragon_info_to_js_value(&dragon_info)).unwrap();
+        notification::get_notification_service().emit(notification::EventType::DragonAdded, &event_data.into());
+        
         Some(dragon_info)
     }
 
     /// Add a dragon with specific attributes
     pub fn add_dragon(&mut self, name: String, element_str: String, age: u32) -> Option<DragonInfo> {
         let clan = self.clan.as_mut()?;
-        let dragon = Dragon::new(name, element_str, age);
+        let dragon = Dragon::new(name.clone(), element_str.clone(), age);
         let dragon_info = DragonInfo::from_dragon(&dragon);
         clan.add_dragon(dragon);
+        
+        // Emit event
+        let event_data = js_sys::Object::new();
+        js_sys::Reflect::set(&event_data, &"type".into(), &"dragon-added".into()).unwrap();
+        js_sys::Reflect::set(&event_data, &"dragon".into(), &Self::dragon_info_to_js_value(&dragon_info)).unwrap();
+        notification::get_notification_service().emit(notification::EventType::DragonAdded, &event_data.into());
+        
         Some(dragon_info)
     }
 
     /// Remove a dragon by index
     pub fn remove_dragon(&mut self, index: usize) -> bool {
         if let Some(clan) = &mut self.clan {
-            clan.remove_dragon(index)
+            // Get dragon name before removing (need immutable borrow first)
+            let dragon_name = {
+                if let Some(dragon) = clan.get_dragon(index) {
+                    dragon.name()
+                } else {
+                    String::new()
+                }
+            };
+            
+            let success = clan.remove_dragon(index);
+            
+            if success {
+                // Emit event
+                let event_data = js_sys::Object::new();
+                js_sys::Reflect::set(&event_data, &"type".into(), &"dragon-removed".into()).unwrap();
+                js_sys::Reflect::set(&event_data, &"dragonName".into(), &dragon_name.into()).unwrap();
+                notification::get_notification_service().emit(notification::EventType::DragonRemoved, &event_data.into());
+            }
+            
+            success
         } else {
             false
         }
@@ -228,12 +269,20 @@ impl ClanService {
         }
 
         let interaction = &interactions[0];
-        Some(InteractionEvent {
+        let event = InteractionEvent {
             description: interaction.result.description(),
             dragon1_index: interaction.dragon1_idx,
             dragon2_index: interaction.dragon2_idx,
             opinion_change: interaction.result.opinion_change(),
-        })
+        };
+        
+        // Emit event
+        let event_data = js_sys::Object::new();
+        js_sys::Reflect::set(&event_data, &"type".into(), &"interaction-simulated".into()).unwrap();
+        js_sys::Reflect::set(&event_data, &"event".into(), &Self::interaction_event_to_js_value(&event)).unwrap();
+        notification::get_notification_service().emit(notification::EventType::InteractionSimulated, &event_data.into());
+        
+        Some(event)
     }
 
     /// Simulate multiple interactions
@@ -249,7 +298,7 @@ impl ClanService {
 
         let interactions = clan.simulate_interactions_with_indices(count);
         
-        interactions
+        let events: Vec<InteractionEvent> = interactions
             .iter()
             .map(|interaction| {
                 InteractionEvent {
@@ -259,19 +308,30 @@ impl ClanService {
                     opinion_change: interaction.result.opinion_change(),
                 }
             })
-            .collect()
+            .collect();
+        
+        // Emit events for each interaction
+        for event in &events {
+            let event_data = js_sys::Object::new();
+            js_sys::Reflect::set(&event_data, &"type".into(), &"interaction-simulated".into()).unwrap();
+            js_sys::Reflect::set(&event_data, &"event".into(), &Self::interaction_event_to_js_value(event)).unwrap();
+            notification::get_notification_service().emit(notification::EventType::InteractionSimulated, &event_data.into());
+        }
+        
+        events
     }
 
     /// Reset the clan (clear and create new)
     pub fn reset_clan(&mut self, initial_dragon_count: usize) {
-        if let Some(clan) = &mut self.clan {
+        let new_name = if let Some(clan) = &mut self.clan {
             clan.clear();
-            let new_name = generate_clan_name();
-            clan.set_name(new_name);
+            let name = generate_clan_name();
+            clan.set_name(name.clone());
+            name
         } else {
             self.create_clan(initial_dragon_count);
             return;
-        }
+        };
 
         // Add new dragons
         for _ in 0..initial_dragon_count {
@@ -280,6 +340,13 @@ impl ClanService {
                 clan.add_dragon(dragon);
             }
         }
+        
+        // Emit event
+        let event_data = js_sys::Object::new();
+        js_sys::Reflect::set(&event_data, &"type".into(), &"clan-reset".into()).unwrap();
+        js_sys::Reflect::set(&event_data, &"clanName".into(), &new_name.into()).unwrap();
+        js_sys::Reflect::set(&event_data, &"dragonCount".into(), &(initial_dragon_count as u32).into()).unwrap();
+        notification::get_notification_service().emit(notification::EventType::ClanReset, &event_data.into());
     }
 
     /// Get relationship info between two dragons
@@ -319,6 +386,28 @@ impl ClanService {
         let age = rng.gen_range(1..=15);
         
         Dragon::new(name, element.as_str().to_string(), age)
+    }
+
+    /// Helper to convert DragonInfo to JsValue
+    fn dragon_info_to_js_value(dragon_info: &DragonInfo) -> JsValue {
+        let obj = js_sys::Object::new();
+        js_sys::Reflect::set(&obj, &"name".into(), &dragon_info.name().into()).unwrap();
+        js_sys::Reflect::set(&obj, &"element".into(), &dragon_info.element().into()).unwrap();
+        js_sys::Reflect::set(&obj, &"age".into(), &(dragon_info.age() as u32).into()).unwrap();
+        js_sys::Reflect::set(&obj, &"energy".into(), &(dragon_info.energy() as u32).into()).unwrap();
+        js_sys::Reflect::set(&obj, &"mood".into(), &dragon_info.mood().into()).unwrap();
+        js_sys::Reflect::set(&obj, &"interactionStyle".into(), &dragon_info.interaction_style().into()).unwrap();
+        obj.into()
+    }
+
+    /// Helper to convert InteractionEvent to JsValue
+    fn interaction_event_to_js_value(event: &InteractionEvent) -> JsValue {
+        let obj = js_sys::Object::new();
+        js_sys::Reflect::set(&obj, &"description".into(), &event.description().into()).unwrap();
+        js_sys::Reflect::set(&obj, &"dragon1Index".into(), &(event.dragon1_index() as u32).into()).unwrap();
+        js_sys::Reflect::set(&obj, &"dragon2Index".into(), &(event.dragon2_index() as u32).into()).unwrap();
+        js_sys::Reflect::set(&obj, &"opinionChange".into(), &(event.opinion_change() as i32).into()).unwrap();
+        obj.into()
     }
 }
 

@@ -19,7 +19,7 @@ For general information about the Rust backend architecture, see [rust-backend.m
                ▼
 ┌─────────────────────────────────────┐
 │  TypeScript Service (optional)      │
-│  - Event emission                   │
+│  - Event forwarding                 │
 │  - Error handling                   │
 └──────────────┬──────────────────────┘
                │
@@ -35,8 +35,17 @@ For general information about the Rust backend architecture, see [rust-backend.m
 ┌─────────────────────────────────────┐
 │    Rust ClanService                 │
 │  - Main business logic              │
+│  - Event emission                   │
 │  - Hides Dragon/DragonClan          │
 └──────────────┬──────────────────────┘
+               │
+               │ Uses
+               ▼
+┌─────────────────────────────────────┐
+│    Notification System               │
+│  - Generic event system              │
+│  - JavaScript callback management    │
+└─────────────────────────────────────┘
                │
                │ Uses (internal)
                ▼
@@ -49,21 +58,27 @@ For general information about the Rust backend architecture, see [rust-backend.m
 
 ## Implementation Details
 
-### Rust Side (`rust/src/clan_service.rs`)
+### Rust Side
 
-1. **ClanService** - Main service struct exposed to WASM
+1. **ClanService** (`rust/src/clan_service.rs`) - Main service struct exposed to WASM
    - Wraps `DragonClan` internally (not exposed)
    - Never exposes `Dragon` objects directly
+   - Emits events through the notification system for state changes
 
-2. **DragonInfo** - Read-only dragon data structure
+2. **NotificationService** (`rust/src/notification.rs`) - Generic event system
+   - Manages JavaScript callback subscriptions
+   - Provides `subscribe_to_event` and `unsubscribe_from_event` functions
+   - Used by ClanService to emit events to TypeScript
+
+3. **DragonInfo** - Read-only dragon data structure
    - Exposed to TypeScript instead of `Dragon`
    - Contains: name, element, age, energy, mood, interactionStyle
 
-3. **InteractionEvent** - Interaction results with indices
+4. **InteractionEvent** - Interaction results with indices
    - Contains: description, dragon1Index, dragon2Index, opinionChange
    - Uses indices instead of Dragon objects
 
-4. **ClanStats** - Clan statistics
+5. **ClanStats** - Clan statistics
    - Contains: name, dragonCount
 
 ### TypeScript Side
@@ -71,10 +86,14 @@ For general information about the Rust backend architecture, see [rust-backend.m
 1. **wasm-wrapper.ts** - Thin wrapper around Rust service
    - Provides TypeScript-friendly interfaces
    - Converts WASM types to TypeScript types
+   - Exposes `subscribeToEvent` and `unsubscribeFromEvent` for Rust events
+   - Exports `EventType` enum for event type constants
 
-2. **services/clan-service.ts** - Optional event layer
-   - Adds event emission
-   - Can be used directly or bypassed
+2. **services/clan-service.ts** - Service layer with event forwarding
+   - Subscribes to Rust events on initialization
+   - Forwards Rust events to TypeScript listeners
+   - Maintains backward compatibility with existing event API
+   - Handles error events (emitted by TypeScript layer)
 
 ## Exported Types
 
@@ -84,12 +103,16 @@ From Rust, only these are exported:
 - `InteractionEvent` - Interaction results
 - `ClanStats` - Clan statistics
 - `DragonElement` - Element enum (still needed)
+- `EventType` - Event type enum for the notification system
+- `subscribe_to_event()` - Subscribe to Rust events
+- `unsubscribe_from_event()` - Unsubscribe from Rust events
 - `generate_dragon_name()` - Name generator
 - `generate_clan_name()` - Clan name generator
 
 **NOT exported:**
 - `Dragon` - Completely hidden
 - `DragonClan` - Completely hidden
+- `NotificationService` - Internal implementation detail
 - Internal Rust types
 
 ## Usage Example

@@ -19,7 +19,7 @@ The service layer provides an abstraction between the UI and the Rust backend. T
 ┌─────────────────────────────────────┐
 │    Service Layer (clan-service.ts)  │
 │  - Business logic orchestration     │
-│  - Event emission                   │
+│  - Event forwarding                 │
 │  - Error handling                   │
 │  - Higher-level operations          │
 └──────────────┬──────────────────────┘
@@ -64,7 +64,8 @@ The service layer provides an abstraction between the UI and the Rust backend. T
 - Better error recovery strategies
 
 ### 5. **Event-Driven Architecture**
-- Service emits events for state changes
+- Rust backend emits events for state changes through a notification system
+- Service layer subscribes to Rust events and forwards them to UI listeners
 - UI can react to events reactively
 - Loose coupling between components
 
@@ -102,14 +103,18 @@ Note: The service returns `DragonInfo` (read-only data) rather than `Dragon` obj
 
 ## Event System
 
-The service emits events for important state changes:
+Events are emitted from the Rust backend through a generic notification system. The TypeScript service layer subscribes to these events and forwards them to UI listeners, maintaining backward compatibility with the existing event API.
+
+The Rust `ClanService` emits events for important state changes:
 
 - `clan-created` - When a new clan is created
 - `dragon-added` - When a dragon is added to the clan
 - `dragon-removed` - When a dragon is removed
 - `interaction-simulated` - When dragons interact
 - `clan-reset` - When the clan is reset
-- `error` - When an error occurs
+- `error` - When an error occurs (emitted by TypeScript service layer)
+
+The notification system (`rust/src/notification.rs`) provides a generic mechanism for Rust code to emit events to JavaScript callbacks, making it reusable for other services.
 
 ## Related Documentation
 

@@ -6,6 +6,7 @@ mod values;
 mod relationship;
 mod clan;
 mod name_generator;
+mod notification;
 mod clan_service;
 
 // Export only what the UI needs - hide internal implementation
@@ -15,6 +16,8 @@ pub use name_generator::{generate_dragon_name, generate_clan_name};
 
 // Export the service - this is the main interface
 pub use clan_service::*;
+// Export notification system
+pub use notification::{EventType, subscribe_to_event, unsubscribe_from_event};
 
 
 #[wasm_bindgen]
