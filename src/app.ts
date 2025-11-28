@@ -29,7 +29,7 @@ function initApp() {
   app.innerHTML = `
     <div class="container">
       <header>
-        <h1>🐉 Dragon Clan Simulator</h1>
+        <h1><span class="emoji">🐉</span> <span class="gradient-text">Dragon Clan Simulator</span></h1>
       </header>
       
       <div class="main-layout">
