@@ -1,12 +1,12 @@
 # Rust Backend Architecture
 
-The Dragon Clan Simulator backend has been converted from TypeScript to Rust and compiled to WebAssembly (WASM) for improved performance.
-
 ## Overview
 
-All core game logic runs in Rust and is compiled to WebAssembly, allowing it to run at near-native speed in the browser. The TypeScript frontend provides a wrapper layer that maintains compatibility with the original API.
+All core game logic runs in Rust and is compiled to WebAssembly, allowing it to run at near-native speed in the browser. The TypeScript frontend provides a wrapper layer that interfaces with the Rust backend.
 
 ## Architecture
+
+The Rust backend consists of several modules that handle different aspects of the game logic. For detailed information about the service layer implementation, see [rust-service-implementation.md](rust-service-implementation.md).
 
 ### Rust Modules
 
@@ -26,7 +26,7 @@ The Rust code uses `wasm-bindgen` to create JavaScript-compatible bindings. The 
 The `wasm-wrapper.ts` file provides a TypeScript interface that:
 - Initializes the WASM module
 - Wraps Rust types in TypeScript classes
-- Maintains API compatibility with the original TypeScript implementation
+- Provides TypeScript-friendly APIs for the Rust backend
 
 ## Building
 
@@ -60,15 +60,9 @@ cd rust && wasm-pack build --target web --watch
 npm run dev
 ```
 
-## Migration Notes
+## Related Documentation
 
-The original TypeScript backend files are still present but are no longer used:
-- `src/dragon.ts` (replaced by `rust/src/dragon.rs`)
-- `src/character.ts` (replaced by `rust/src/character.rs`)
-- `src/values.ts` (replaced by `rust/src/values.rs`)
-- `src/relationship.ts` (replaced by `rust/src/relationship.rs`)
-- `src/clan.ts` (replaced by `rust/src/clan.rs`)
-- `src/nameGenerator.ts` (replaced by `rust/src/name_generator.rs`)
+For details on the service layer architecture, see [service-layer-architecture.md](service-layer-architecture.md).
 
-These files are kept for reference but should not be imported directly.
+For information about the ClanService implementation, see [rust-service-implementation.md](rust-service-implementation.md).
 

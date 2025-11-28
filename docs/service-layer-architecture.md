@@ -2,7 +2,7 @@
 
 ## Overview
 
-The service layer provides an abstraction between the UI and the domain objects (Dragon, DragonClan). This creates a clean separation of concerns and makes the codebase more maintainable and testable.
+The service layer provides an abstraction between the UI and the Rust backend. This creates a clean separation of concerns and makes the codebase more maintainable and testable. The service layer uses `DragonInfo` (read-only data structures) rather than exposing internal domain objects.
 
 ## Architecture Layers
 
@@ -81,20 +81,24 @@ The `IClanService` interface defines the contract:
 interface IClanService {
   initialize(): Promise<void>;
   createClan(initialDragonCount?: number): Promise<void>;
-  getClan(): DragonClan | null;
-  getDragons(): Dragon[];
-  getDragon(index: number): Dragon | null;
-  addRandomDragon(): Promise<Dragon>;
-  addDragon(dragon: Dragon): Promise<void>;
-  removeDragon(dragon: Dragon): Promise<boolean>;
-  simulateInteraction(): Promise<InteractionResult | null>;
-  simulateInteractions(count: number): Promise<InteractionResult[]>;
+  getDragons(): DragonInfo[];
+  getDragon(index: number): DragonInfo | null;
+  addRandomDragon(): Promise<DragonInfo>;
+  addDragon(name: string, element: DragonElement, age: number): Promise<DragonInfo>;
+  removeDragon(index: number): Promise<boolean>;
+  simulateInteraction(): Promise<InteractionEvent | null>;
+  simulateInteractions(count: number): Promise<InteractionEvent[]>;
   resetClan(initialDragonCount?: number): Promise<void>;
   getClanStats(): ClanStats | null;
+  getRelationshipInfo(dragon1Index: number, dragon2Index: number): string | null;
+  getOpinion(dragon1Index: number, dragon2Index: number): number | null;
+  getDragonCharacterInfo(index: number): string | null;
   on(event: string, listener: Function): void;
   off(event: string, listener: Function): void;
 }
 ```
+
+Note: The service returns `DragonInfo` (read-only data) rather than `Dragon` objects. See [rust-service-implementation.md](rust-service-implementation.md) for details.
 
 ## Event System
 
@@ -107,25 +111,11 @@ The service emits events for important state changes:
 - `clan-reset` - When the clan is reset
 - `error` - When an error occurs
 
-## Migration Path
+## Related Documentation
 
-### Current (Direct Usage)
-```typescript
-// app.ts directly uses Dragon and DragonClan
-const clan = new DragonClan(generateClanName());
-const dragon = new Dragon(name, element, age);
-clan.addDragon(dragon);
-clan.simulateInteractions(10);
-```
+For implementation details of the Rust ClanService, see [rust-service-implementation.md](rust-service-implementation.md).
 
-### New (Service Layer)
-```typescript
-// app.ts uses ClanService
-await clanService.initialize();
-await clanService.createClan(6);
-await clanService.addRandomDragon();
-await clanService.simulateInteractions(10);
-```
+For general Rust backend architecture, see [rust-backend.md](rust-backend.md).
 
 ## Usage Example
 

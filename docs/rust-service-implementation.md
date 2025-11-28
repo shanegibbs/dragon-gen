@@ -2,7 +2,9 @@
 
 ## Overview
 
-The ClanService has been moved to Rust, completely hiding the internal `Dragon` and `DragonClan` objects from the TypeScript/UI layer. This provides better encapsulation and ensures the UI can only interact with dragons through the service interface.
+The ClanService is implemented in Rust and completely hides the internal `Dragon` and `DragonClan` objects from the TypeScript/UI layer. This provides better encapsulation and ensures the UI can only interact with dragons through the service interface.
+
+For general information about the Rust backend architecture, see [rust-backend.md](rust-backend.md). For the service layer architecture, see [service-layer-architecture.md](service-layer-architecture.md).
 
 ## Architecture
 
@@ -45,7 +47,7 @@ The ClanService has been moved to Rust, completely hiding the internal `Dragon` 
 └─────────────────────────────────────┘
 ```
 
-## Key Changes
+## Implementation Details
 
 ### Rust Side (`rust/src/clan_service.rs`)
 
@@ -127,20 +129,21 @@ events.forEach(event => {
 4. **Maintainability** - Changes to internal structure don't affect UI
 5. **Security** - UI can't directly manipulate internal state
 
-## Migration Notes
+## API Usage
 
-The old `Dragon` and `DragonClan` classes are no longer available. All operations must go through `ClanService`:
+All operations must go through `ClanService`. The service returns `DragonInfo` objects (read-only data) rather than `Dragon` objects:
 
-**Before:**
 ```typescript
-const dragon = new Dragon(name, element, age);
-clan.addDragon(dragon);
-```
+// Create service and clan
+const service = new ClanService();
+await service.initialize();
+service.createClan(6);
 
-**After:**
-```typescript
-const dragonInfo = service.addDragon(name, element, age);
-// Returns DragonInfo, not Dragon
+// Add a dragon - returns DragonInfo, not Dragon
+const dragonInfo = await service.addDragon(name, element, age);
+
+// Access dragon data through DragonInfo
+console.log(dragonInfo.name, dragonInfo.element, dragonInfo.age);
 ```
 
 ## Building
@@ -158,7 +161,7 @@ Or use the npm script:
 npm run build:wasm
 ```
 
-This will regenerate the WASM bindings with the new `ClanService` export. The dev server (Vite) will automatically pick up the changes via hot-reload.
+This will regenerate the WASM bindings. The dev server (Vite) will automatically pick up the changes via hot-reload.
 
 **Note:** Make sure to source your Rust environment if needed:
 ```bash
