@@ -46,25 +46,30 @@ See [docs/web-deployment.md](docs/web-deployment.md) for detailed deployment ins
 - [Web Deployment](docs/web-deployment.md) - Deployment instructions
 - [Character System](docs/character.md) - Character traits and values
 - [Value System](docs/value-system.md) - How values affect interactions
+- [Rust Service Implementation](docs/rust-service-implementation.md) - Service layer architecture
+- [Service Layer Architecture](docs/service-layer-architecture.md) - Architecture overview
 
 ## 🏗️ Project Structure
 
 ```
 src/
-  ├── app.ts           # Web frontend
-  ├── app.css          # Styles
-  └── wasm-wrapper.ts  # TypeScript wrapper for Rust/WASM backend
+  ├── app.ts              # Web frontend
+  ├── app.css             # Styles
+  ├── wasm-wrapper.ts     # TypeScript wrapper for Rust/WASM backend
+  └── services/
+      └── clan-service.ts  # Optional TypeScript service layer with events
 
 rust/
   ├── src/
-  │   ├── lib.rs       # Main Rust entry point
-  │   ├── dragon.rs    # Dragon entity and interactions
-  │   ├── clan.rs      # Clan management
-  │   ├── character.rs # Character system
-  │   ├── values.rs    # Value system
-  │   ├── relationship.rs # Relationship management
+  │   ├── lib.rs          # Main Rust entry point
+  │   ├── clan_service.rs  # ClanService - main interface (hides internal objects)
+  │   ├── dragon.rs        # Dragon entity (internal, not exported)
+  │   ├── clan.rs          # Clan management (internal, not exported)
+  │   ├── character.rs     # Character system
+  │   ├── values.rs        # Value system
+  │   ├── relationship.rs  # Relationship management
   │   └── name_generator.rs # Name generation
-  └── pkg/             # Generated WASM package
+  └── pkg/                 # Generated WASM package
 
 index.html              # Web entry point
 vite.config.ts          # Vite configuration

@@ -1,4 +1,12 @@
-import init, { Dragon as WasmDragon, DragonClan as WasmDragonClan, InteractionResult as WasmInteractionResult, generate_dragon_name as wasmGenerateDragonName, generate_clan_name as wasmGenerateClanName } from '../rust/pkg/dragon_gen.js';
+import init, { 
+  ClanService as WasmClanService,
+  DragonInfo as WasmDragonInfo,
+  DragonElement as WasmDragonElement,
+  InteractionEvent as WasmInteractionEvent,
+  ClanStats as WasmClanStats,
+  generate_dragon_name as wasmGenerateDragonName,
+  generate_clan_name as wasmGenerateClanName,
+} from '../rust/pkg/dragon_gen.js';
 
 let wasmInitialized = false;
 
@@ -15,238 +23,185 @@ export async function initWasm() {
   }
 }
 
-// Re-export types and functions
+// Re-export types
 export type DragonElement = 'Fire' | 'Water' | 'Earth' | 'Wind' | 'Lightning' | 'Ice';
 
-export interface InteractionResult {
+// Dragon info interface (read-only, no internal Dragon object exposed)
+export interface DragonInfo {
+  name: string;
+  element: DragonElement;
+  age: number;
+  energy: number;
+  mood: string;
+  interactionStyle: string;
+}
+
+// Interaction event interface
+export interface InteractionEvent {
   description: string;
+  dragon1Index: number;
+  dragon2Index: number;
   opinionChange: number;
 }
 
-// Wrapper classes to match the original TypeScript API
-export class Dragon {
-  private wasmDragon: WasmDragon;
-
-  constructor(name: string, element: DragonElement, age: number) {
-    this.wasmDragon = new WasmDragon(name, element, age);
-  }
-
-  get name(): string {
-    return this.wasmDragon.name;
-  }
-
-  get element(): DragonElement {
-    return this.wasmDragon.element as DragonElement;
-  }
-
-  get age(): number {
-    return this.wasmDragon.age;
-  }
-
-  get energy(): number {
-    return this.wasmDragon.energy;
-  }
-
-  get mood(): string {
-    return this.wasmDragon.mood;
-  }
-
-  get character(): any {
-    // Return a proxy object that provides the needed methods
-    // We need to capture the wasmDragon reference directly
-    const wasmDragon = this.wasmDragon;
-    const dragonName = this.name;
-    return {
-      getInteractionStyle: () => {
-        try {
-          return wasmDragon.get_interaction_style();
-        } catch (error) {
-          console.error('Error getting interaction style for', dragonName, ':', error);
-          return 'serious'; // Default style
-        }
-      },
-    };
-  }
-
-  interactWith(other: Dragon): InteractionResult {
-    const result = this.wasmDragon.interact_with(other.wasmDragon);
-    return {
-      description: result.description,
-      opinionChange: result.opinion_change,
-    };
-  }
-
-  getOpinionOf(other: Dragon): number {
-    try {
-      return this.wasmDragon.get_opinion_of(other.wasmDragon);
-    } catch (error) {
-      console.error('Error getting opinion:', error, 'self:', this.name, 'other:', other.name);
-      return 0; // Default to neutral
-    }
-  }
-
-  updateOpinionFromInteraction(other: Dragon, interactionDescription: string, baseOpinionChange: number): void {
-    this.wasmDragon.update_opinion_from_interaction(other.wasmDragon, interactionDescription, baseOpinionChange);
-  }
-
-  rest(): void {
-    this.wasmDragon.rest();
-  }
-
-  getInfo(): string {
-    return this.wasmDragon.get_info();
-  }
-
-  getCharacterInfo(): string {
-    try {
-      if (!this.wasmDragon) {
-        console.error('WASM dragon is null for', this.name);
-        return `${this.name}'s Details:\n  Error: WASM dragon reference is invalid`;
-      }
-      return this.wasmDragon.get_character_info();
-    } catch (error) {
-      console.error('Error getting character info:', error, 'dragon:', this.name);
-      return `${this.name}'s Details:\n  Error loading character information`;
-    }
-  }
-
-  getRelationshipInfo(other: Dragon): string {
-    try {
-      return this.wasmDragon.get_relationship_info(other.wasmDragon);
-    } catch (error) {
-      console.error('Error getting relationship info:', error, 'self:', this.name, 'other:', other.name);
-      return '😐 neutral (0/100, 0 interactions)'; // Default relationship
-    }
-  }
-
-  getInteractionStyle(): string {
-    try {
-      if (!this.wasmDragon) {
-        console.error('WASM dragon is null for', this.name);
-        return 'serious';
-      }
-      return this.wasmDragon.get_interaction_style();
-    } catch (error) {
-      console.error('Error getting interaction style:', error, 'dragon:', this.name);
-      return 'serious'; // Default style
-    }
-  }
-
-  // Internal method to get the WASM dragon for clan operations
-  getWasmDragon(): WasmDragon {
-    return this.wasmDragon;
-  }
+// Clan stats interface
+export interface ClanStats {
+  name: string;
+  dragonCount: number;
 }
 
-export class DragonClan {
-  private wasmClan: WasmDragonClan;
-  private dragons: Dragon[] = [];
+// Wrapper for the Rust ClanService
+export class ClanService {
+  private wasmService: WasmClanService;
 
-  constructor(name: string) {
-    this.wasmClan = new WasmDragonClan(name);
+  constructor() {
+    this.wasmService = new WasmClanService();
   }
 
-  get name(): string {
-    return this.wasmClan.name;
+  /**
+   * Create a new clan with random name and initial dragons
+   */
+  createClan(initialDragonCount: number = 6): void {
+    this.wasmService.create_clan(initialDragonCount);
   }
 
-  set name(value: string) {
-    this.wasmClan.name = value;
+  /**
+   * Get clan statistics
+   */
+  getClanStats(): ClanStats | null {
+    const stats = this.wasmService.get_clan_stats();
+    if (!stats) return null;
+    return {
+      name: stats.name, // Property, not method
+      dragonCount: stats.dragon_count, // Property, not method
+    };
   }
 
-  addDragon(dragon: Dragon): void {
-    try {
-      // Add the WASM dragon to the clan (this takes ownership)
-      const wasmDragon = dragon.getWasmDragon();
-      this.wasmClan.add_dragon(wasmDragon);
-      
-      // Retrieve the dragon back from the clan to get a valid reference
-      const count = this.wasmClan.get_dragon_count();
-      const retrievedWasmDragon = this.wasmClan.get_dragon(count - 1);
-      if (retrievedWasmDragon) {
-        // Update the dragon wrapper's internal WASM dragon reference
-        // to point to the one stored in the clan
-        (dragon as any).wasmDragon = retrievedWasmDragon;
-        this.dragons.push(dragon);
-      } else {
-        // Fallback: keep the original dragon
-        this.dragons.push(dragon);
-      }
-    } catch (error) {
-      console.error('Error adding dragon to clan:', error);
-      // Still add it to our array even if there was an error
-      this.dragons.push(dragon);
-    }
+  /**
+   * Get all dragons as read-only info
+   */
+  getDragons(): DragonInfo[] {
+    const wasmDragons = this.wasmService.get_dragons();
+    return wasmDragons.map((d: WasmDragonInfo) => this.convertDragonInfo(d));
   }
 
+  /**
+   * Get a specific dragon by index
+   */
+  getDragon(index: number): DragonInfo | null {
+    const dragon = this.wasmService.get_dragon(index);
+    if (!dragon) return null;
+    return this.convertDragonInfo(dragon);
+  }
+
+  /**
+   * Get dragon count
+   */
   getDragonCount(): number {
-    return this.wasmClan.get_dragon_count();
+    return this.wasmService.get_dragon_count();
   }
 
-  getDragons(): Dragon[] {
-    // Return a copy of our dragons array
-    return [...this.dragons];
+  /**
+   * Get clan name
+   */
+  getClanName(): string {
+    return this.wasmService.get_clan_name();
   }
 
-  getDragon(index: number): Dragon | null {
-    // Try to get from our array first
-    if (index < this.dragons.length) {
-      return this.dragons[index];
-    }
-    // If not in our array, try to get from WASM and wrap it
-    const wasmDragon = this.wasmClan.get_dragon(index);
-    if (!wasmDragon) {
-      return null;
-    }
-    // Create a wrapper for the WASM dragon
-    // Note: We can't easily reconstruct the wrapper from WASM, so we'll return null
-    // and rely on our dragons array
-    return null;
+  /**
+   * Add a random dragon to the clan
+   */
+  addRandomDragon(): DragonInfo | null {
+    const dragon = this.wasmService.add_random_dragon();
+    if (!dragon) return null;
+    return this.convertDragonInfo(dragon);
   }
 
-  removeDragon(dragon: Dragon): boolean {
-    const index = this.dragons.indexOf(dragon);
-    if (index > -1) {
-      this.dragons.splice(index, 1);
-      return this.wasmClan.remove_dragon(index);
-    }
-    return false;
+  /**
+   * Add a dragon with specific attributes
+   */
+  addDragon(name: string, element: DragonElement, age: number): DragonInfo | null {
+    const dragon = this.wasmService.add_dragon(name, element, age);
+    if (!dragon) return null;
+    return this.convertDragonInfo(dragon);
   }
 
-  clear(): void {
-    this.wasmClan.clear();
-    this.dragons = [];
+  /**
+   * Remove a dragon by index
+   */
+  removeDragon(index: number): boolean {
+    return this.wasmService.remove_dragon(index);
   }
 
-  simulateInteractions(count: number): Array<{ description: string; dragon1: Dragon; dragon2: Dragon; opinionChange: number }> {
-    const interactions: Array<{ description: string; dragon1: Dragon; dragon2: Dragon; opinionChange: number }> = [];
-    
-    if (this.dragons.length < 2) {
-      console.log('Not enough dragons for interactions!');
-      return interactions;
-    }
+  /**
+   * Simulate a single interaction
+   */
+  simulateInteraction(): InteractionEvent | null {
+    const event = this.wasmService.simulate_interaction();
+    if (!event) return null;
+    return this.convertInteractionEvent(event);
+  }
 
-    // The WASM code handles interactions internally and updates relationships
-    // We simulate one interaction at a time to track which dragons interacted
-    for (let i = 0; i < count; i++) {
-      const wasmResults = this.wasmClan.simulate_interactions(1);
-      if (wasmResults.length > 0) {
-        const result = wasmResults[0];
-        // Since WASM doesn't tell us which dragons interacted, we'll use placeholder dragons
-        // The actual relationship updates happened in WASM
-        const dragon1 = this.dragons[0]; // Placeholder
-        const dragon2 = this.dragons[1]; // Placeholder
-        
-        interactions.push({
-          description: result.description,
-          dragon1,
-          dragon2,
-          opinionChange: result.opinion_change,
-        });
-      }
-    }
+  /**
+   * Simulate multiple interactions
+   */
+  simulateInteractions(count: number): InteractionEvent[] {
+    const events = this.wasmService.simulate_interactions(count);
+    return events.map((e: WasmInteractionEvent) => this.convertInteractionEvent(e));
+  }
 
-    return interactions;
+  /**
+   * Reset the clan (clear and create new)
+   */
+  resetClan(initialDragonCount: number = 6): void {
+    this.wasmService.reset_clan(initialDragonCount);
+  }
+
+  /**
+   * Get relationship info between two dragons
+   */
+  getRelationshipInfo(dragon1Index: number, dragon2Index: number): string | null {
+    return this.wasmService.get_relationship_info(dragon1Index, dragon2Index) || null;
+  }
+
+  /**
+   * Get opinion of dragon1 about dragon2
+   */
+  getOpinion(dragon1Index: number, dragon2Index: number): number | null {
+    return this.wasmService.get_opinion(dragon1Index, dragon2Index) || null;
+  }
+
+  /**
+   * Get character info for a dragon
+   */
+  getDragonCharacterInfo(index: number): string | null {
+    return this.wasmService.get_dragon_character_info(index) || null;
+  }
+
+  /**
+   * Convert WASM DragonInfo to TypeScript interface
+   */
+  private convertDragonInfo(wasmDragon: WasmDragonInfo): DragonInfo {
+    return {
+      name: wasmDragon.name, // Property, not method
+      element: wasmDragon.element as DragonElement, // Property, not method
+      age: wasmDragon.age, // Property, not method
+      energy: wasmDragon.energy, // Property, not method
+      mood: wasmDragon.mood, // Property, not method
+      interactionStyle: wasmDragon.interaction_style, // Property, not method
+    };
+  }
+
+  /**
+   * Convert WASM InteractionEvent to TypeScript interface
+   */
+  private convertInteractionEvent(wasmEvent: WasmInteractionEvent): InteractionEvent {
+    return {
+      description: wasmEvent.description, // Property, not method
+      dragon1Index: wasmEvent.dragon1_index, // Property, not method
+      dragon2Index: wasmEvent.dragon2_index, // Property, not method
+      opinionChange: wasmEvent.opinion_change, // Property, not method
+    };
   }
 }
 
@@ -256,7 +211,6 @@ export function generateDragonName(element?: DragonElement): string {
     return wasmGenerateDragonName(element || undefined);
   } catch (error) {
     console.error('Error generating dragon name:', error, 'element:', element);
-    // Fallback to a simple name if WASM fails
     return `Dragon${Math.floor(Math.random() * 1000)}`;
   }
 }
@@ -266,8 +220,6 @@ export function generateClanName(): string {
     return wasmGenerateClanName();
   } catch (error) {
     console.error('Error generating clan name:', error);
-    // Fallback name
     return 'The Dragon Clan';
   }
 }
-
