@@ -5,3 +5,7 @@ dist-web/
 .DS_Store
 .env
 
+# Rust build artifacts
+rust/target/
+rust/pkg/
+
