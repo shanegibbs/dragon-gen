@@ -1,4 +1,4 @@
-import { ClanService as WasmClanService, DragonInfo, DragonElement, InteractionEvent, ClanStats, generateDragonName, generateClanName, initWasm } from '../wasm-wrapper.js';
+import { ClanService as WasmClanService, DragonInfo, DragonElement, InteractionEvent, ClanStats, initWasm } from '../wasm-wrapper.js';
 
 /**
  * Event types that can be emitted by the ClanService
@@ -341,7 +341,6 @@ export class ClanService implements IClanService {
       });
     }
   }
-
 }
 
 /**
