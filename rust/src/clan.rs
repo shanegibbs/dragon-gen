@@ -97,26 +97,23 @@ impl DragonClan {
             return None;
         }
 
-        // Clone dragon2 for the interaction
+        // The interaction system now handles both sides internally
+        // Dragon1 generates a communication, and we simulate the response
         let dragon2_clone = self.dragons[idx2].clone();
-        
-        // Get the result from dragon1's perspective
         let result = {
             let dragon1 = &mut self.dragons[idx1];
             dragon1.interact_with(&dragon2_clone)
         };
 
-        // Update dragon2's opinion
+        // Update dragon2's opinion based on the interaction
+        // The interact_with method already handles the receiver's response internally,
+        // but we need to update dragon2's relationship as well
         {
             let dragon1_clone = self.dragons[idx1].clone();
             let description = result.description();
-            let other_perspective_change = {
-                use rand::Rng;
-                let mut rng = rand::thread_rng();
-                (result.opinion_change() as f64 * (0.8 + rng.gen::<f64>() * 0.4)) as i32
-            };
+            // Use the opinion change from the result (which is the receiver's perspective)
             let dragon2 = &mut self.dragons[idx2];
-            dragon2.update_opinion_from_interaction(&dragon1_clone, &description, other_perspective_change);
+            dragon2.update_opinion_from_interaction(&dragon1_clone, &description, result.opinion_change());
         }
 
         Some(result)
@@ -156,25 +153,27 @@ impl DragonClan {
 
     /// Get opinion of dragon at idx1 about dragon at idx2
     /// This is NOT exposed to WASM - it's an internal method
-    pub(crate) fn get_opinion_by_indices(&mut self, idx1: usize, idx2: usize) -> Option<i32> {
+    /// Returns 0 if no relationship exists yet
+    pub(crate) fn get_opinion_by_indices(&self, idx1: usize, idx2: usize) -> Option<i32> {
         if idx1 >= self.dragons.len() || idx2 >= self.dragons.len() || idx1 == idx2 {
             return None;
         }
 
         let dragon2 = self.dragons[idx2].clone();
-        let dragon1 = &mut self.dragons[idx1];
+        let dragon1 = &self.dragons[idx1];
         Some(dragon1.get_opinion_of(&dragon2))
     }
 
     /// Get relationship info between two dragons by indices
     /// This is NOT exposed to WASM - it's an internal method
-    pub(crate) fn get_relationship_info_by_indices(&mut self, idx1: usize, idx2: usize) -> Option<String> {
+    /// Returns neutral relationship info if no relationship exists yet
+    pub(crate) fn get_relationship_info_by_indices(&self, idx1: usize, idx2: usize) -> Option<String> {
         if idx1 >= self.dragons.len() || idx2 >= self.dragons.len() || idx1 == idx2 {
             return None;
         }
 
         let dragon2 = self.dragons[idx2].clone();
-        let dragon1 = &mut self.dragons[idx1];
+        let dragon1 = &self.dragons[idx1];
         Some(dragon1.get_relationship_info(&dragon2))
     }
 }

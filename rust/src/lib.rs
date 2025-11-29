@@ -4,6 +4,7 @@ mod dragon;
 mod character;
 mod values;
 mod relationship;
+mod communication;
 mod clan;
 mod name_generator;
 mod notification;

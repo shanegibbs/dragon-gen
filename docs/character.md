@@ -47,38 +47,26 @@ Each dragon's element influences their base personality traits:
 
 ### 🔥 Fire Dragons
 - **Tendencies**: Higher aggression (+20), higher dominance (+15)
-- **Preferred Elements**: Fire, Lightning
-- **Disliked Elements**: Water, Ice
 - **Typical Style**: Often aggressive or serious, natural leaders
 
 ### 💧 Water Dragons
 - **Tendencies**: Higher patience (+20), higher friendliness (+15)
-- **Preferred Elements**: Water, Ice
-- **Disliked Elements**: Fire, Lightning
 - **Typical Style**: Usually friendly or serious, calm and patient
 
 ### 🌍 Earth Dragons
 - **Tendencies**: Higher patience (+25), lower curiosity (-15)
-- **Preferred Elements**: Earth, Wind
-- **Disliked Elements**: None (neutral)
 - **Typical Style**: Usually serious, steady and reliable
 
 ### 💨 Wind Dragons
 - **Tendencies**: Higher curiosity (+20), higher playfulness (+15)
-- **Preferred Elements**: Wind, Lightning
-- **Disliked Elements**: None (neutral)
 - **Typical Style**: Often playful or curious, energetic and exploratory
 
 ### ⚡ Lightning Dragons
 - **Tendencies**: Higher aggression (+15), higher curiosity (+20)
-- **Preferred Elements**: Lightning, Fire
-- **Disliked Elements**: Earth
 - **Typical Style**: Often aggressive or curious, intense and dynamic
 
 ### ❄️ Ice Dragons
 - **Tendencies**: Lower sociability (-20), higher patience (+25)
-- **Preferred Elements**: Ice, Water
-- **Disliked Elements**: Fire
 - **Typical Style**: Often shy or serious, reserved and patient
 
 ## Interaction Styles
@@ -146,102 +134,66 @@ Each dragon element influences their base values:
 ### Value Alignment
 
 Dragons with aligned values form stronger bonds, while conflicting values can create tension:
-
 - **Complementary values**: Similar high values in areas like Honor, Tradition, Community, or Harmony create positive alignment
 - **Conflicting values**: Opposing high values (e.g., Freedom vs Community, Tradition vs Growth, Power vs Harmony) reduce alignment
-- **Value alignment** contributes 30% to overall compatibility between dragons
+- **Value conflicts are discovered through communication** - dragons don't know each other's values until they interact
 
-## Compatibility System
+## Communication System
 
-Dragons have compatibility scores with each other based on multiple factors:
+Dragons interact through a structured communication system. Each interaction consists of:
+1. **Communication Generation**: The sender generates a communication based on their own values and traits
+2. **Communication Processing**: The receiver interprets and responds based on their own values and traits
+3. **Opinion Updates**: Both dragons update their opinions based on the communication exchange
 
-### Trait Compatibility
-- Dragons with similar levels of **friendliness**, **sociability**, **playfulness**, and **patience** tend to get along better
-- The closer these traits are, the higher the compatibility
+### How Communications Are Generated
 
-### Dominance Compatibility
-- **Similar dominance** (difference < 30): Work well together, understand each other's roles
-- **Very different dominance** (difference > 70): Can complement each other (leader/follower dynamic)
-- **Moderate differences**: May have some friction
+Communications are generated **purely from the sender's perspective**:
+- **Value-based communications**: When a sender has high values (>70), they express those values
+- **Trait-based communications**: Based on the sender's personality traits (playful, friendly, curious, shy, aggressive)
+- **Opinion influence**: The sender's existing opinion of the receiver affects communication intensity and tone
+- **No receiver knowledge**: The sender does NOT know the receiver's internal values or traits when generating communications
 
-### Aggression Compatibility
-- **Both low aggression** (< 30): Very compatible, peaceful interactions
-- **Both high aggression** (> 70): High conflict potential, incompatible
-- **Mixed aggression**: Can work, but may have occasional friction
+### How Communications Are Processed
 
-### Element Preferences
-- Dragons prefer certain elements and dislike others
-- **Preferred elements**: +25 compatibility bonus
-- **Disliked elements**: -30 compatibility penalty
+When a receiver processes a communication:
+- **Value interpretation**: If the sender expresses a value, the receiver checks if they share it
+  - **Shared high value**: Positive response (+10-15 opinion)
+  - **Conflicting value**: Negative response (-5 opinion)
+  - **Neutral value**: Polite acknowledgment (-3 to +5 opinion)
+- **Trait-based responses**: The receiver's traits determine how they respond
+  - **Playful receiver + playful communication**: Enthusiastic response (+12 opinion)
+  - **Shy receiver + shy communication**: Appreciates gentle approach (+6 opinion)
+  - **Aggressive receiver + confrontational communication**: Rises to challenge (-10 to -20 opinion)
+- **Opinion formation**: The receiver forms opinions based on how communications align with their values and traits
 
-### Trait Preferences
-- Dragons may be attracted to or avoid certain personality traits
-- **Preferred traits** (when other dragon has > 60): +10 compatibility
-- **Disliked traits** (when other dragon has > 60): -15 compatibility
+### Communication Types
 
-### Value Alignment
-- Dragons with aligned values have higher compatibility
-- **Value alignment** contributes 30% to overall compatibility score
-- Complementary values (e.g., both high Honor, both high Community) increase alignment
-- Conflicting values (e.g., high Freedom vs high Community) decrease alignment
-
-## How Interactions Work
-
-### Value-Based Interactions
-
-When dragons share high values, special interactions can occur:
-
-- **High Honor (both > 70)**: "They make a solemn promise together - their shared honor creates a bond" (+10-15 opinion)
-- **High Community (both > 70)**: "They work together for the clan's benefit - their shared values strengthen their bond" (+8-12 opinion)
-- **High Harmony (both > 70)**: "They seek peaceful resolution to a disagreement - their shared value for harmony prevails" (+6-9 opinion)
-- **High Wisdom (both > 70)**: "They engage in deep philosophical discussion - their shared wisdom creates understanding" (+7-10 opinion)
-
-Value conflicts can also create specific interactions:
-
-- **Freedom vs Community**: "They disagree on priorities - individual freedom vs collective good" (-5 opinion)
-- **Tradition vs Growth**: "They debate the value of tradition versus progress" (-4 opinion)
-- **Power vs Harmony**: "They clash over approaches - one seeks influence, the other seeks peace" (-6 opinion)
-
-### Compatibility Ranges
-
-#### Very Incompatible (< -50)
-- **Aggressive dragons**: May confront each other directly
-- **Non-aggressive dragons**: Will avoid each other or keep distance
-- **Result**: Negative opinion changes (-5 to -20)
-
-#### Incompatible (-50 to 0)
-- **Behavior**: Polite but distant, brief acknowledgments
-- **Result**: Small negative or neutral opinion changes (-2 to +1)
-
-#### Moderate Compatibility (0 to 50)
-- **Behavior**: Standard interactions (greetings, stories, chatting, helping)
-- **Style-specific**: Shy dragons have quiet conversations, aggressive dragons may challenge to friendly competitions
-- **Result**: Small positive opinion changes (+2 to +5)
-
-#### High Compatibility (> 50)
-- **Playful + Playful**: Energetic games together (+12-15 opinion)
-- **Curious dragons**: Explore interesting things together (+10 opinion)
-- **Friendly dragons**: Warm, friendly conversations (+8 opinion)
-- **Others**: Effective collaboration (+7 opinion)
-- **Result**: Significant positive opinion changes (+7 to +15)
+- **Value Alignment**: Sender expresses a value they care about (honor, community, wisdom, etc.)
+- **Playful**: Sender invites play or fun activities
+- **Friendly**: Sender greets warmly or offers help
+- **Curious**: Sender asks questions or suggests exploration
+- **Shy**: Sender tentatively approaches
+- **Confrontational**: Sender challenges or confronts
+- **Neutral**: Standard polite communication
 
 ### Existing Relationships
 
-- **Positive existing opinion**: Makes positive interactions more likely and impactful
-- **Negative existing opinion**: Makes negative interactions more likely
-- **Opinion modifier**: Existing relationship affects compatibility by up to ±30 points
-- **Value alignment modifier**: Value alignment affects compatibility by up to ±20 points
+- **Positive existing opinion**: Makes communications more intense and warm
+- **Negative existing opinion**: Makes communications more neutral or confrontational
+- **No relationship yet**: Dragons with no prior interactions start from neutral (0) when they first communicate
 
 ## Relationship Building
 
-### Initial Opinions
-- Dragons start with an initial opinion based on 30% of their compatibility score
-- This represents first impressions before any interactions
+### Emergent Relationships
+- **Relationships are not pre-computed** - they only exist and develop through actual interactions
+- Dragons start with **no relationship** (neutral, 0 opinion) until they interact
+- When dragons first interact, a relationship is created starting from neutral (0)
+- All relationship development is **purely emergent** from structured interactions
 
 ### Opinion Changes
 - **Early interactions**: Have more impact (up to 100% of base change)
-- **Later interactions**: Have diminishing impact (down to ~17% after 50+ interactions)
-- **Stabilization**: Opinions converge toward a stable value based on compatibility
+- **Later interactions**: Have diminishing impact (down to ~50% after many interactions)
+- **No pre-computed bias**: Relationships develop organically based on how dragons actually interact through communications
 
 ### Relationship Status
 
@@ -255,47 +207,56 @@ Opinions translate to relationship descriptions:
 - **-79 to -50**: 😠 Unfriendly
 - **-100 to -80**: 💢 Rivals
 
-### Stabilization
+### Relationship Evolution
 
-Over many interactions, relationships stabilize:
-- Opinions converge toward ~70% of compatibility score
-- Early interactions matter most
-- Later interactions fine-tune the relationship
-- Prevents relationships from continuously increasing or decreasing
+Over many interactions, relationships evolve naturally:
+- Early interactions have the most impact on forming the relationship
+- Later interactions have diminishing returns, allowing relationships to stabilize
+- Relationships develop organically based on actual interactions, not predetermined compatibility
+- Each interaction contributes to the relationship, creating unique dynamics between dragons
 
-## Example Interactions
+## Example Communications
 
-### High Compatibility Example
-- **Dragon A**: Fire, Playful style, high friendliness
-- **Dragon B**: Wind, Playful style, high playfulness
-- **Result**: "They play an energetic game together!" (+12-15 opinion)
+### Value-Based Communication Example
+- **Sender**: High honor (85), expresses honor to receiver
+- **Receiver**: High honor (80)
+- **Communication**: "Sender (Fire) makes a solemn promise to Receiver (Water)"
+- **Response**: "Receiver enthusiastically agrees with Sender about honor"
+- **Result**: +12 opinion (shared high value)
 
-### Low Compatibility Example
-- **Dragon A**: Fire, Aggressive style, high aggression
-- **Dragon B**: Water, Friendly style, low aggression
-- **Result**: "Dragon A confronts Dragon B - they don't get along" (-15-20 opinion)
+### Value Conflict Example
+- **Sender**: High freedom (85), expresses freedom to receiver
+- **Receiver**: High community (80)
+- **Communication**: "Sender (Wind) emphasizes the importance of individual freedom to Receiver (Earth)"
+- **Response**: "Receiver disagrees with Sender's perspective on freedom"
+- **Result**: -5 opinion (conflicting values)
 
-### Element Conflict Example
-- **Dragon A**: Fire (dislikes Water)
-- **Dragon B**: Water (dislikes Fire)
-- **Result**: Lower compatibility, more likely to have negative interactions
+### Playful Communication Example
+- **Sender**: Playful style, high friendliness and playfulness
+- **Receiver**: Playful style, high playfulness
+- **Communication**: "Sender (Wind) invites Receiver (Fire) to play an energetic game"
+- **Response**: "Receiver joins in the fun enthusiastically"
+- **Result**: +12 opinion (shared playfulness)
 
-### Shy Dragon Example
-- **Dragon A**: Ice, Shy style, low sociability
-- **Dragon B**: Any style
-- **Result**: "Dragon A tentatively approaches Dragon B" or "quiet conversation" (+3-5 opinion)
+### Shy Communication Example
+- **Sender**: Shy style, low sociability
+- **Receiver**: Any style
+- **Communication**: "Sender (Ice) tentatively approaches Receiver (Water)"
+- **Response**: "Receiver responds warmly to the tentative approach"
+- **Result**: +3 to +6 opinion (depending on receiver's traits)
 
 ## Summary
 
 The personality and value system creates unique, dynamic relationships between dragons:
-- Each dragon has distinct traits, preferences, and values
+- Each dragon has distinct traits and values
 - Elements influence base personality tendencies and values
-- Compatibility is determined by traits, preferences, and value alignment
-- Value alignment contributes 30% to overall compatibility
-- Special value-based interactions occur when dragons share or conflict in values
-- Compatibility determines interaction quality
-- Relationships evolve and stabilize over time
-- Interactions reflect personality differences, similarities, and value alignment
+- **Communications are generated from the sender's perspective** - based only on sender's values, traits, and opinion of receiver
+- **Communications are processed from the receiver's perspective** - receiver interprets based on their own values and traits
+- Value conflicts are discovered through communication, not pre-computed
+- **Relationships are emergent** - they only exist and develop through actual communications
+- Relationships start from neutral (0) when dragons first interact
+- Relationships evolve organically over time based on structured communications
+- Each communication exchange creates unique dynamics based on how values and traits align or conflict
 
-This creates a rich social simulation where dragons form friendships, rivalries, and everything in between based on their individual personalities, values, and how they interact over time.
+This creates a rich social simulation where dragons form friendships, rivalries, and everything in between based on their individual personalities, values, and how they actually communicate over time. Relationships are not pre-computed but emerge naturally from the structured communication system between dragons.
 
