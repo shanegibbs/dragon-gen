@@ -1,20 +1,77 @@
 use crate::dragon::DragonElement;
 
+/*
+Thought space on values:
+- Socionomy - A conceptual space describing how individuals and groups relate along the spectrum from autonomy to collective integration.
+- Chronotaxis - The ordering of priorities between what has been inherited and what must evolve.
+- Praxisguard - The dynamic tension between advancing objectives (praxis) and guarding assets (protection).
+*/
+
 #[derive(Debug, Clone, Copy)]
 pub struct DragonValues {
+    // Non-conflicting individual values
     pub honor: u32,
-    pub freedom: u32,
-    pub tradition: u32,
-    pub growth: u32,
-    pub community: u32,
-    pub achievement: u32,
-    pub harmony: u32,
-    pub power: u32,
     pub wisdom: u32,
-    pub protection: u32,
+    
+    // Conflicting pairs represented as axes (0-100)
+    // Higher value = more of the first value, lower = more of the second
+    /// Freedom (high) vs Community (low) axis
+    /// 0 = max community, 100 = max freedom
+    pub freedom_vs_community: u32,
+    /// Tradition (high) vs Growth (low) axis
+    /// 0 = max growth, 100 = max tradition
+    pub tradition_vs_growth: u32,
+    /// Power (high) vs Harmony (low) axis
+    /// 0 = max harmony, 100 = max power
+    pub power_vs_harmony: u32,
+    /// Achievement (high) vs Protection (low) axis
+    /// 0 = max protection, 100 = max achievement
+    pub achievement_vs_protection: u32,
 }
 
 impl DragonValues {
+    /// Get individual value from an axis
+    /// For axes where higher = first value, lower = second value
+    fn get_first_from_axis(axis: u32) -> u32 {
+        axis
+    }
+    
+    fn get_second_from_axis(axis: u32) -> u32 {
+        100u32.saturating_sub(axis)
+    }
+    
+    // Convenience getters for individual values (for backward compatibility)
+    pub fn freedom(&self) -> u32 {
+        Self::get_first_from_axis(self.freedom_vs_community)
+    }
+    
+    pub fn community(&self) -> u32 {
+        Self::get_second_from_axis(self.freedom_vs_community)
+    }
+    
+    pub fn tradition(&self) -> u32 {
+        Self::get_first_from_axis(self.tradition_vs_growth)
+    }
+    
+    pub fn growth(&self) -> u32 {
+        Self::get_second_from_axis(self.tradition_vs_growth)
+    }
+    
+    pub fn power(&self) -> u32 {
+        Self::get_first_from_axis(self.power_vs_harmony)
+    }
+    
+    pub fn harmony(&self) -> u32 {
+        Self::get_second_from_axis(self.power_vs_harmony)
+    }
+    
+    pub fn achievement(&self) -> u32 {
+        Self::get_first_from_axis(self.achievement_vs_protection)
+    }
+    
+    pub fn protection(&self) -> u32 {
+        Self::get_second_from_axis(self.achievement_vs_protection)
+    }
 }
 
 // Removed calculate_value_alignment and get_value - no longer used since relationships are emergent
@@ -28,69 +85,63 @@ fn random_value() -> u32 {
 }
 
 pub fn generate_dragon_values(element: Option<DragonElement>) -> DragonValues {
+    // Generate random axis values (0-100)
+    // For axes: higher = first value, lower = second value
     let mut values = DragonValues {
         honor: random_value(),
-        freedom: random_value(),
-        tradition: random_value(),
-        growth: random_value(),
-        community: random_value(),
-        achievement: random_value(),
-        harmony: random_value(),
-        power: random_value(),
         wisdom: random_value(),
-        protection: random_value(),
+        freedom_vs_community: random_value(),
+        tradition_vs_growth: random_value(),
+        power_vs_harmony: random_value(),
+        achievement_vs_protection: random_value(),
     };
 
     // Element-based value adjustments
+    // Adjust axes by moving toward the preferred value
     if let Some(element) = element {
         match element {
             DragonElement::Fire => {
-                values.power = (values.power + 20).min(100);
-                values.achievement = (values.achievement + 15).min(100);
-                values.harmony = values.harmony.saturating_sub(15);
+                // Higher power, higher achievement, lower harmony
+                values.power_vs_harmony = (values.power_vs_harmony + 20).min(100);
+                values.achievement_vs_protection = (values.achievement_vs_protection + 15).min(100);
             }
             DragonElement::Water => {
-                values.harmony = (values.harmony + 20).min(100);
-                values.protection = (values.protection + 15).min(100);
+                // Higher harmony, higher protection, higher wisdom
+                values.power_vs_harmony = values.power_vs_harmony.saturating_sub(20);
+                values.achievement_vs_protection = values.achievement_vs_protection.saturating_sub(15);
                 values.wisdom = (values.wisdom + 10).min(100);
             }
             DragonElement::Earth => {
-                values.tradition = (values.tradition + 25).min(100);
+                // Higher tradition, higher honor, lower growth
+                values.tradition_vs_growth = (values.tradition_vs_growth + 25).min(100);
                 values.honor = (values.honor + 15).min(100);
-                values.growth = values.growth.saturating_sub(15);
             }
             DragonElement::Wind => {
-                values.freedom = (values.freedom + 25).min(100);
-                values.growth = (values.growth + 20).min(100);
-                values.tradition = values.tradition.saturating_sub(15);
+                // Higher freedom, higher growth, lower tradition
+                values.freedom_vs_community = (values.freedom_vs_community + 25).min(100);
+                values.tradition_vs_growth = values.tradition_vs_growth.saturating_sub(20);
             }
             DragonElement::Lightning => {
-                values.achievement = (values.achievement + 20).min(100);
-                values.power = (values.power + 15).min(100);
-                values.harmony = values.harmony.saturating_sub(15);
+                // Higher achievement, higher power, lower harmony
+                values.achievement_vs_protection = (values.achievement_vs_protection + 20).min(100);
+                values.power_vs_harmony = (values.power_vs_harmony + 15).min(100);
             }
             DragonElement::Ice => {
+                // Higher wisdom, higher harmony, lower community
                 values.wisdom = (values.wisdom + 25).min(100);
-                values.harmony = (values.harmony + 15).min(100);
-                values.community = values.community.saturating_sub(15);
+                values.power_vs_harmony = values.power_vs_harmony.saturating_sub(15);
+                values.freedom_vs_community = values.freedom_vs_community.saturating_sub(15);
             }
         }
     }
 
     // Ensure all values are in valid range
     values.honor = values.honor.min(100);
-    values.freedom = values.freedom.min(100);
-    values.tradition = values.tradition.min(100);
-    values.growth = values.growth.min(100);
-    values.community = values.community.min(100);
-    values.achievement = values.achievement.min(100);
-    values.harmony = values.harmony.min(100);
-    values.power = values.power.min(100);
     values.wisdom = values.wisdom.min(100);
-    values.protection = values.protection.min(100);
+    values.freedom_vs_community = values.freedom_vs_community.min(100);
+    values.tradition_vs_growth = values.tradition_vs_growth.min(100);
+    values.power_vs_harmony = values.power_vs_harmony.min(100);
+    values.achievement_vs_protection = values.achievement_vs_protection.min(100);
 
     values
 }
-
-// Removed get_top_values - no longer used
-

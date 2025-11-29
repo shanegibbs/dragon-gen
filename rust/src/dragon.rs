@@ -242,26 +242,26 @@ impl Dragon {
         
         let mut trait_entries: Vec<(String, u32)> = vec![
             ("Friendliness".to_string(), traits.friendliness),
-            ("Aggression".to_string(), traits.aggression),
+            ("Aggression".to_string(), traits.aggression()),
             ("Sociability".to_string(), traits.sociability),
             ("Curiosity".to_string(), traits.curiosity),
             ("Playfulness".to_string(), traits.playfulness),
             ("Dominance".to_string(), traits.dominance),
-            ("Patience".to_string(), traits.patience),
+            ("Patience".to_string(), traits.patience()),
         ];
         trait_entries.sort_by(|a, b| b.1.cmp(&a.1));
         
         let mut value_entries: Vec<(String, u32)> = vec![
             ("Honor".to_string(), values.honor),
-            ("Freedom".to_string(), values.freedom),
-            ("Tradition".to_string(), values.tradition),
-            ("Growth".to_string(), values.growth),
-            ("Community".to_string(), values.community),
-            ("Achievement".to_string(), values.achievement),
-            ("Harmony".to_string(), values.harmony),
-            ("Power".to_string(), values.power),
+            ("Freedom".to_string(), values.freedom()),
+            ("Tradition".to_string(), values.tradition()),
+            ("Growth".to_string(), values.growth()),
+            ("Community".to_string(), values.community()),
+            ("Achievement".to_string(), values.achievement()),
+            ("Harmony".to_string(), values.harmony()),
+            ("Power".to_string(), values.power()),
             ("Wisdom".to_string(), values.wisdom),
-            ("Protection".to_string(), values.protection),
+            ("Protection".to_string(), values.protection()),
         ];
         value_entries.sort_by(|a, b| b.1.cmp(&a.1));
         

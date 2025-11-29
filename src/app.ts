@@ -51,6 +51,7 @@ async function initApp() {
 
           <div class="controls">
             <button id="simulate-btn" class="btn btn-primary">Simulate 10 Interactions</button>
+            <button id="simulate-100-btn" class="btn btn-primary">Simulate 100 Interactions</button>
             <button id="auto-simulate-btn" class="btn btn-secondary">Start Auto-Simulate</button>
             <button id="add-dragon-btn" class="btn btn-secondary">Add Random Dragon</button>
             <button id="reset-btn" class="btn btn-danger">Reset Clan</button>
@@ -171,6 +172,23 @@ async function initApp() {
 
   document.getElementById('simulate-btn')?.addEventListener('click', async () => {
     const count = 10;
+    const interactions = await clanService.simulateInteractions(count);
+    interactionCount += count;
+    
+    // Add each interaction to the event log
+    interactions.forEach(interaction => {
+      addEventLogEntry(interaction.description, 'interaction');
+    });
+    
+    // Add summary
+    addEventLogEntry(`Simulated ${count} interactions (${interactionCount} total)`, 'action');
+    
+    renderDragons();
+    renderRelationships();
+  });
+
+  document.getElementById('simulate-100-btn')?.addEventListener('click', async () => {
+    const count = 100;
     const interactions = await clanService.simulateInteractions(count);
     interactionCount += count;
     

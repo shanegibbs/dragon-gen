@@ -6,9 +6,13 @@ The internal value system represents the core principles and beliefs that guide 
 
 ## Core Values
 
-Each dragon has a set of core values, each measured on a scale from 0 to 100. These values influence how dragons evaluate actions, form opinions of others, and make decisions.
+Each dragon has a set of core values that influence how they evaluate actions, form opinions of others, and make decisions. Values are measured on a scale from 0 to 100.
 
-### 1. Honor (0-100)
+Some values are naturally conflicting and are represented as axes where a dragon cannot have both values high simultaneously. This ensures internal consistency in a dragon's value system.
+
+### Independent Values
+
+#### Honor (0-100)
 **What it means**: Commitment to integrity, keeping promises, and maintaining personal dignity.
 
 - **Low (0-30)**: Pragmatic, may break rules if beneficial, flexible ethics
@@ -17,70 +21,7 @@ Each dragon has a set of core values, each measured on a scale from 0 to 100. Th
 
 **Influence**: Dragons with high honor respect others with high honor, and may lose respect for those who break promises or act dishonorably.
 
-### 2. Freedom (0-100)
-**What it means**: Value for independence, autonomy, and resistance to constraints.
-
-- **Low (0-30)**: Comfortable with structure, rules, and following traditions
-- **Medium (31-70)**: Balanced between independence and cooperation
-- **High (71-100)**: Strongly values personal freedom, resents being controlled, prefers autonomy
-
-**Influence**: High-freedom dragons may conflict with high-dominance dragons who try to control them. They respect others who value independence.
-
-### 3. Tradition (0-100)
-**What it means**: Respect for established customs, ancestral wisdom, and maintaining the old ways.
-
-- **Low (0-30)**: Open to change, questions traditions, progressive
-- **Medium (31-70)**: Respects some traditions but open to innovation
-- **High (71-100)**: Deeply values ancestral customs, resistant to change, reveres history
-
-**Influence**: Traditional dragons bond with others who respect customs. They may clash with highly curious or freedom-loving dragons who challenge traditions.
-
-### 4. Growth (0-100)
-**What it means**: Belief in progress, learning, self-improvement, and embracing change.
-
-- **Low (0-30)**: Prefers stability, content with current state, minimal change
-- **Medium (31-70)**: Open to improvement but not obsessed with it
-- **High (71-100)**: Always seeking to improve, values learning, embraces innovation
-
-**Influence**: Growth-oriented dragons appreciate others who are curious and open to new experiences. They may find traditional dragons limiting.
-
-### 5. Community (0-100)
-**What it means**: Prioritizing the collective good, cooperation, and clan welfare over individual interests.
-
-- **Low (0-30)**: Individualistic, prioritizes personal goals, self-reliant
-- **Medium (31-70)**: Balances personal and group interests
-- **High (71-100)**: Puts clan first, values cooperation, sacrifices for the group
-
-**Influence**: Community-focused dragons bond with others who share this value. They may be frustrated by highly individualistic dragons.
-
-### 6. Achievement (0-100)
-**What it means**: Value for personal success, recognition, and demonstrating capability.
-
-- **Low (0-30)**: Content with modest accomplishments, not driven by status
-- **Medium (31-70)**: Some ambition but not obsessive
-- **High (71-100)**: Highly competitive, seeks recognition, driven to excel
-
-**Influence**: Achievement-focused dragons respect others who demonstrate skill and success. They may compete with other high-achievement dragons.
-
-### 7. Harmony (0-100)
-**What it means**: Value for balance, peace, avoiding conflict, and maintaining equilibrium.
-
-- **Low (0-30)**: Comfortable with conflict, doesn't avoid disagreements
-- **Medium (31-70)**: Prefers peace but will stand up when needed
-- **High (71-100)**: Strongly avoids conflict, seeks balance, values peace above all
-
-**Influence**: Harmony-focused dragons may mediate conflicts. They appreciate peaceful dragons and may avoid aggressive ones.
-
-### 8. Power (0-100)
-**What it means**: Value for strength, influence, and the ability to affect outcomes.
-
-- **Low (0-30)**: Comfortable with less influence, doesn't seek control
-- **Medium (31-70)**: Some interest in influence but not obsessed
-- **High (71-100)**: Strongly values power, seeks to influence others, respects strength
-
-**Influence**: Power-focused dragons respect others with high dominance and achievement. They may conflict with freedom-loving dragons.
-
-### 9. Wisdom (0-100)
+#### Wisdom (0-100)
 **What it means**: Value for knowledge, understanding, and making well-considered decisions.
 
 - **Low (0-30)**: Acts on instinct, less concerned with deep understanding
@@ -89,64 +30,73 @@ Each dragon has a set of core values, each measured on a scale from 0 to 100. Th
 
 **Influence**: Wisdom-focused dragons appreciate patient, curious dragons. They may mentor younger dragons or seek guidance from elders.
 
-### 10. Protection (0-100)
-**What it means**: Value for caring for others, defending the vulnerable, and ensuring safety.
+### Value Axes
 
-- **Low (0-30)**: Self-focused, less concerned with others' welfare
-- **Medium (31-70)**: Will help when needed but not overly protective
-- **High (71-100)**: Strongly protective, defends others, values safety and care
+Some values are naturally conflicting and are represented as axes where a dragon cannot have both values high simultaneously. This ensures internal consistency in a dragon's value system.
 
-**Influence**: Protection-focused dragons bond with community-oriented dragons. They may conflict with aggressive dragons who threaten others.
+#### Freedom vs Community Axis (0-100)
+**What it means**: The tension between individual autonomy and collective good.
+
+- **High axis value (71-100)**: High Freedom - Strongly values personal freedom, resents being controlled, prefers autonomy
+- **Low axis value (0-30)**: High Community - Puts clan first, values cooperation, sacrifices for the group
+- **Medium (31-70)**: Balanced between independence and cooperation
+
+A dragon cannot simultaneously prioritize individual autonomy above all and put the collective good first.
+
+#### Tradition vs Growth Axis (0-100)
+**What it means**: The tension between maintaining old ways and embracing change.
+
+- **High axis value (71-100)**: High Tradition - Deeply values ancestral customs, resistant to change, reveres history
+- **Low axis value (0-30)**: High Growth - Always seeking to improve, values learning, embraces innovation
+- **Medium (31-70)**: Respects some traditions but open to innovation
+
+A dragon cannot simultaneously resist change and embrace innovation.
+
+#### Power vs Harmony Axis (0-100)
+**What it means**: The tension between seeking influence and avoiding conflict.
+
+- **High axis value (71-100)**: High Power - Strongly values power, seeks to influence others, respects strength
+- **Low axis value (0-30)**: High Harmony - Strongly avoids conflict, seeks balance, values peace above all
+- **Medium (31-70)**: Prefers peace but will stand up when needed
+
+A dragon cannot simultaneously seek to influence others through strength and avoid all conflict.
+
+#### Achievement vs Protection Axis (0-100)
+**What it means**: The tension between personal success and caring for others.
+
+- **High axis value (71-100)**: High Achievement - Highly competitive, seeks recognition, driven to excel
+- **Low axis value (0-30)**: High Protection - Strongly protective, defends others, values safety and care
+- **Medium (31-70)**: Some ambition but also willing to help when needed
+
+A dragon cannot simultaneously prioritize personal success above all and put others' welfare first.
 
 ## Element-Based Value Tendencies
 
-Each dragon element influences their base values, similar to how they influence personality traits:
+Each dragon element influences their base values, similar to how they influence personality traits. For value axes, adjustments move the axis toward the preferred value.
 
-### 🔥 Fire Dragons
-- **Tendencies**: Higher Power (+20), Higher Achievement (+15), Lower Harmony (-15)
-- **Typical Values**: Power, Achievement, Honor
-- **Philosophy**: Strength and success through personal excellence
-
-### 💧 Water Dragons
-- **Tendencies**: Higher Harmony (+20), Higher Protection (+15), Higher Wisdom (+10)
-- **Typical Values**: Harmony, Protection, Community
-- **Philosophy**: Balance and care for the collective
-
-### 🌍 Earth Dragons
-- **Tendencies**: Higher Tradition (+25), Higher Honor (+15), Lower Growth (-15)
-- **Typical Values**: Tradition, Honor, Stability
-- **Philosophy**: Respect for the old ways and steadfast principles
-
-### 💨 Wind Dragons
-- **Tendencies**: Higher Freedom (+25), Higher Growth (+20), Lower Tradition (-15)
-- **Typical Values**: Freedom, Growth, Exploration
-- **Philosophy**: Embrace change and personal autonomy
-
-### ⚡ Lightning Dragons
-- **Tendencies**: Higher Achievement (+20), Higher Power (+15), Lower Harmony (-15)
-- **Typical Values**: Achievement, Power, Growth
-- **Philosophy**: Progress through strength and innovation
-
-### ❄️ Ice Dragons
-- **Tendencies**: Higher Wisdom (+25), Higher Harmony (+15), Lower Community (-15)
-- **Typical Values**: Wisdom, Harmony, Independence
-- **Philosophy**: Understanding through contemplation and balance
+For detailed information about each element's value tendencies, typical values, and philosophy, see [dragon-elements.md](dragon-elements.md).
 
 ## Value Compatibility
 
 Values can create compatibility or conflict between dragons, but these are discovered through communication:
 
+### Internal Consistency
+- Dragons cannot have conflicting values high simultaneously (e.g., high tradition and high growth)
+- Conflicting value pairs are represented as axes, ensuring internal consistency
+- This prevents dragons from having contradictory value systems
+
 ### Complementary Values
 - **Honor + Tradition**: Both value respect for established principles
-- **Community + Protection**: Both prioritize collective welfare
-- **Growth + Wisdom**: Both value learning and improvement
-- **Freedom + Achievement**: Both value personal autonomy and success
+- **Community + Protection**: Both prioritize collective welfare (when community is high on the axis)
+- **Growth + Wisdom**: Both value learning and improvement (when growth is high on the axis)
+- **Freedom + Achievement**: Both value personal autonomy and success (when freedom is high on the axis)
 
-### Conflicting Values
-- **Freedom vs. Community**: Individual autonomy vs. collective good
-- **Tradition vs. Growth**: Maintaining old ways vs. embracing change
-- **Power vs. Harmony**: Seeking influence vs. avoiding conflict
-- **Achievement vs. Protection**: Personal success vs. caring for others
+### Inter-Dragon Value Conflicts
+While dragons cannot have conflicting values internally, they can still conflict with other dragons:
+- **Freedom vs. Community**: A high-freedom dragon may conflict with a high-community dragon
+- **Tradition vs. Growth**: A traditional dragon may clash with a growth-oriented dragon
+- **Power vs. Harmony**: A power-focused dragon may conflict with a harmony-seeking dragon
+- **Achievement vs. Protection**: An achievement-focused dragon may clash with a protection-focused dragon
 
 ## How Values Influence Communication
 
@@ -166,6 +116,8 @@ Values can create compatibility or conflict between dragons, but these are disco
 ## Implementation Considerations
 
 - Values are generated when a dragon is created, with element-based adjustments
+- Conflicting value pairs are represented as axes (0-100), ensuring internal consistency
+- Individual values are derived from axes (e.g., freedom = axis value, community = 100 - axis value)
 - Values influence what communications dragons generate (high values are expressed)
 - Values influence how dragons respond to communications (shared values = positive, conflicts = negative)
 - Values create emergent relationship dynamics through the communication system
@@ -174,14 +126,30 @@ Values can create compatibility or conflict between dragons, but these are disco
 ## Example Value Profiles
 
 **Traditional Guardian** (Earth Dragon):
-- Honor: 85, Tradition: 90, Community: 75, Protection: 70, Freedom: 25, Growth: 20
+- Honor: 85, Wisdom: 60
+- Tradition vs Growth axis: 90 (Tradition: 90, Growth: 10)
+- Freedom vs Community axis: 25 (Freedom: 25, Community: 75)
+- Power vs Harmony axis: 30 (Power: 30, Harmony: 70)
+- Achievement vs Protection axis: 30 (Achievement: 30, Protection: 70)
 
 **Free-Spirited Explorer** (Wind Dragon):
-- Freedom: 90, Growth: 85, Curiosity: 80, Tradition: 15, Community: 30, Harmony: 40
+- Honor: 50, Wisdom: 60
+- Tradition vs Growth axis: 15 (Tradition: 15, Growth: 85)
+- Freedom vs Community axis: 90 (Freedom: 90, Community: 10)
+- Power vs Harmony axis: 60 (Power: 60, Harmony: 40)
+- Achievement vs Protection axis: 70 (Achievement: 70, Protection: 30)
 
 **Ambitious Leader** (Fire Dragon):
-- Power: 85, Achievement: 90, Honor: 70, Freedom: 60, Community: 40, Harmony: 25
+- Honor: 70, Wisdom: 50
+- Tradition vs Growth axis: 50 (Tradition: 50, Growth: 50)
+- Freedom vs Community axis: 60 (Freedom: 60, Community: 40)
+- Power vs Harmony axis: 85 (Power: 85, Harmony: 15)
+- Achievement vs Protection axis: 90 (Achievement: 90, Protection: 10)
 
 **Wise Mediator** (Ice Dragon):
-- Wisdom: 90, Harmony: 85, Protection: 70, Community: 50, Achievement: 30, Power: 25
+- Honor: 60, Wisdom: 90
+- Tradition vs Growth axis: 50 (Tradition: 50, Growth: 50)
+- Freedom vs Community axis: 50 (Freedom: 50, Community: 50)
+- Power vs Harmony axis: 25 (Power: 25, Harmony: 75)
+- Achievement vs Protection axis: 30 (Achievement: 30, Protection: 70)
 

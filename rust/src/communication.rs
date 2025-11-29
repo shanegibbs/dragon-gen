@@ -186,7 +186,7 @@ pub fn generate_communication(
         );
     }
     
-    if sender_traits.aggression > 70 {
+    if sender_traits.aggression() > 70 {
         return create_confrontational_communication(
             sender_name,
             receiver_name,
@@ -451,9 +451,9 @@ fn interpret_communication(
             }
         }
         CommunicationType::Confrontational => {
-            if receiver_traits.aggression > 70 {
+            if receiver_traits.aggression() > 70 {
                 format!("{} rises to the challenge", receiver_name)
-            } else if receiver_traits.aggression < 30 {
+            } else if receiver_traits.aggression() < 30 {
                 format!("{} is unsettled by the confrontation", receiver_name)
             } else {
                 format!("{} responds defensively", receiver_name)
@@ -531,9 +531,9 @@ fn generate_response(
             }
         }
         CommunicationType::Confrontational => {
-            if receiver_traits.aggression > 70 {
+            if receiver_traits.aggression() > 70 {
                 (format!("{} rises to the challenge and confronts back", receiver_name), if existing_opinion < 0 { -20 } else { -10 }, CommunicationTone::Challenging)
-            } else if receiver_traits.aggression < 30 {
+            } else if receiver_traits.aggression() < 30 {
                 (format!("{} is hurt by the confrontation and withdraws", receiver_name), -15, CommunicationTone::Negative)
             } else {
                 (format!("{} responds defensively", receiver_name), -8, CommunicationTone::Negative)
@@ -549,15 +549,15 @@ fn generate_response(
 fn get_top_values(values: &DragonValues, count: usize) -> Vec<(String, u32)> {
     let mut value_entries = vec![
         ("honor".to_string(), values.honor),
-        ("freedom".to_string(), values.freedom),
-        ("tradition".to_string(), values.tradition),
-        ("growth".to_string(), values.growth),
-        ("community".to_string(), values.community),
-        ("achievement".to_string(), values.achievement),
-        ("harmony".to_string(), values.harmony),
-        ("power".to_string(), values.power),
+        ("freedom".to_string(), values.freedom()),
+        ("tradition".to_string(), values.tradition()),
+        ("growth".to_string(), values.growth()),
+        ("community".to_string(), values.community()),
+        ("achievement".to_string(), values.achievement()),
+        ("harmony".to_string(), values.harmony()),
+        ("power".to_string(), values.power()),
         ("wisdom".to_string(), values.wisdom),
-        ("protection".to_string(), values.protection),
+        ("protection".to_string(), values.protection()),
     ];
     value_entries.sort_by(|a, b| b.1.cmp(&a.1));
     value_entries.into_iter().take(count).collect()
@@ -566,15 +566,15 @@ fn get_top_values(values: &DragonValues, count: usize) -> Vec<(String, u32)> {
 fn get_value(values: &DragonValues, name: &str) -> u32 {
     match name {
         "honor" => values.honor,
-        "freedom" => values.freedom,
-        "tradition" => values.tradition,
-        "growth" => values.growth,
-        "community" => values.community,
-        "achievement" => values.achievement,
-        "harmony" => values.harmony,
-        "power" => values.power,
+        "freedom" => values.freedom(),
+        "tradition" => values.tradition(),
+        "growth" => values.growth(),
+        "community" => values.community(),
+        "achievement" => values.achievement(),
+        "harmony" => values.harmony(),
+        "power" => values.power(),
         "wisdom" => values.wisdom,
-        "protection" => values.protection,
+        "protection" => values.protection(),
         _ => 0,
     }
 }
@@ -589,6 +589,8 @@ fn check_value_conflicts(sender_value: &str, receiver_values: &DragonValues) -> 
         ("growth", "tradition"),
         ("power", "harmony"),
         ("harmony", "power"),
+        ("achievement", "protection"),
+        ("protection", "achievement"),
     ];
     
     for (val1, val2) in conflict_pairs {

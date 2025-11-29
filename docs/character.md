@@ -4,70 +4,52 @@ This document explains how dragon personalities work and how they interact with 
 
 ## Character Traits
 
-Each dragon has seven core personality traits, each measured on a scale from 0 to 100:
+Each dragon has six independent personality traits and one trait axis (representing a conflicting pair), each measured on a scale from 0 to 100:
 
-### Friendliness (0-100)
+### Independent Traits
+
+#### Friendliness (0-100)
 - **Low (0-30)**: Reserved, cautious, or standoffish
 - **Medium (31-70)**: Generally approachable, balanced social behavior
 - **High (71-100)**: Warm, welcoming, and open to others
 
-### Aggression (0-100)
-- **Low (0-30)**: Peaceful, avoids conflict, prefers harmony
-- **Medium (31-70)**: Can be assertive when needed, balanced
-- **High (71-100)**: Confrontational, competitive, quick to challenge
-
-### Sociability (0-100)
+#### Sociability (0-100)
 - **Low (0-30)**: Prefers solitude, introverted, shy
 - **Medium (31-70)**: Enjoys some social time, balanced
 - **High (71-100)**: Thrives in groups, extroverted, seeks company
 
-### Curiosity (0-100)
+#### Curiosity (0-100)
 - **Low (0-30)**: Content with familiar things, less exploratory
 - **Medium (31-70)**: Moderate interest in new experiences
 - **High (71-100)**: Eager to explore, discover, and learn
 
-### Playfulness (0-100)
+#### Playfulness (0-100)
 - **Low (0-30)**: Serious, focused, business-like
 - **Medium (31-70)**: Can have fun but also serious when needed
 - **High (71-100)**: Fun-loving, energetic, enjoys games and activities
 
-### Dominance (0-100)
+#### Dominance (0-100)
 - **Low (0-30)**: Submissive, follows others, prefers not to lead
 - **Medium (31-70)**: Balanced leadership, can lead or follow
 - **High (71-100)**: Natural leader, takes charge, assertive
 
-### Patience (0-100)
-- **Low (0-30)**: Impulsive, quick to act, easily frustrated
-- **Medium (31-70)**: Generally patient but has limits
-- **High (71-100)**: Very tolerant, calm, takes time to consider
+### Trait Axes
+
+Some traits are naturally conflicting and are represented as axes where a dragon cannot have both traits high simultaneously:
+
+#### Aggression vs Patience Axis (0-100)
+This axis represents the conflict between being confrontational and being calm:
+- **High axis value (71-100)**: High Aggression - Confrontational, competitive, quick to challenge
+- **Low axis value (0-30)**: High Patience - Very tolerant, calm, takes time to consider
+- **Medium (31-70)**: Balanced between assertiveness and patience
+
+A dragon cannot be both quick to challenge and take time to consider simultaneously. The axis ensures internal consistency in personality.
 
 ## Element-Based Personality Tendencies
 
-Each dragon's element influences their base personality traits:
+Each dragon's element influences their base personality traits. For trait axes, adjustments move the axis toward the preferred trait.
 
-### 🔥 Fire Dragons
-- **Tendencies**: Higher aggression (+20), higher dominance (+15)
-- **Typical Style**: Often aggressive or serious, natural leaders
-
-### 💧 Water Dragons
-- **Tendencies**: Higher patience (+20), higher friendliness (+15)
-- **Typical Style**: Usually friendly or serious, calm and patient
-
-### 🌍 Earth Dragons
-- **Tendencies**: Higher patience (+25), lower curiosity (-15)
-- **Typical Style**: Usually serious, steady and reliable
-
-### 💨 Wind Dragons
-- **Tendencies**: Higher curiosity (+20), higher playfulness (+15)
-- **Typical Style**: Often playful or curious, energetic and exploratory
-
-### ⚡ Lightning Dragons
-- **Tendencies**: Higher aggression (+15), higher curiosity (+20)
-- **Typical Style**: Often aggressive or curious, intense and dynamic
-
-### ❄️ Ice Dragons
-- **Tendencies**: Lower sociability (-20), higher patience (+25)
-- **Typical Style**: Often shy or serious, reserved and patient
+For detailed information about each element's personality tendencies, typical styles, and characteristics, see [dragon-elements.md](dragon-elements.md).
 
 ## Interaction Styles
 
@@ -122,14 +104,7 @@ Each dragon has an internal value system that represents their core principles a
 
 ### Element-Based Value Tendencies
 
-Each dragon element influences their base values:
-
-- **🔥 Fire Dragons**: Higher Power (+20), Higher Achievement (+15), Lower Harmony (-15)
-- **💧 Water Dragons**: Higher Harmony (+20), Higher Protection (+15), Higher Wisdom (+10)
-- **🌍 Earth Dragons**: Higher Tradition (+25), Higher Honor (+15), Lower Growth (-15)
-- **💨 Wind Dragons**: Higher Freedom (+25), Higher Growth (+20), Lower Tradition (-15)
-- **⚡ Lightning Dragons**: Higher Achievement (+20), Higher Power (+15), Lower Harmony (-15)
-- **❄️ Ice Dragons**: Higher Wisdom (+25), Higher Harmony (+15), Lower Community (-15)
+Each dragon element influences their base values. For detailed information about each element's value tendencies, typical values, and philosophy, see [dragon-elements.md](dragon-elements.md).
 
 ### Value Alignment
 
