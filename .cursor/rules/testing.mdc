@@ -1,0 +1,7 @@
+---
+alwaysApply: true
+---
+
+All changes MUST be validated. This includes:
+- Running a full build: `npm run build`
+- Opening the http://localhost:3000/dragon-gen/ and checking for errors

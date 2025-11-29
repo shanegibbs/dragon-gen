@@ -2,16 +2,13 @@
   "name": "dragon-clan-simulator",
   "version": "0.1.0",
   "description": "A 2D simulation game of a clan of dragons",
-  "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "build:wasm": "cd rust && wasm-pack build --target web",
+    "dev": "npm run build:wasm && vite",
+    "build": "npm run build:wasm && vite build",
     "preview": "vite preview",
-    "build:cli": "tsc",
-    "start:cli": "node dist/index.js",
-    "dev:cli": "tsc --watch & node --watch dist/index.js",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist rust/pkg"
   },
   "keywords": ["game", "simulation", "dragons"],
   "author": "",

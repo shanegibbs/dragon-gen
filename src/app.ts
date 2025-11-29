@@ -1,32 +1,42 @@
 import './app.css';
-import { Dragon, DragonElement } from './dragon.js';
-import { DragonClan } from './clan.js';
-import { generateDragonName, generateClanName } from './nameGenerator.js';
+import { clanService } from './services/clan-service.js';
+import { DragonInfo, DragonElement } from './wasm-wrapper.js';
+import { generateDragonName } from './wasm-wrapper.js';
 
-// Helper function to create a dragon with random name, element, and age
-function createRandomDragon(): Dragon {
+// Helper function to create a random dragon and add it to the clan
+async function createRandomDragon(): Promise<DragonInfo> {
   const elements: DragonElement[] = ['Fire', 'Water', 'Earth', 'Wind', 'Lightning', 'Ice'];
   const element = elements[Math.floor(Math.random() * elements.length)];
   const name = generateDragonName(element);
   const age = Math.floor(Math.random() * 15) + 1; // Age between 1 and 15
-  return new Dragon(name, element, age);
+  return await clanService.addDragon(name, element, age);
 }
 
 // Initialize the app
-function initApp() {
-  const app = document.getElementById('app');
-  if (!app) return;
+async function initApp() {
+  try {
+    // Initialize service (this also initializes WASM)
+    console.log('Initializing service...');
+    await clanService.initialize();
+    console.log('Service initialized, creating clan...');
+    
+    const app = document.getElementById('app');
+    if (!app) {
+      console.error('App element not found!');
+      return;
+    }
 
-  // Create a clan with some initial dragons
-  const clan = new DragonClan(generateClanName());
+    // Create a clan with some initial dragons
+    console.log('Creating clan with 6 dragons...');
+    await clanService.createClan(6);
+    const stats = clanService.getClanStats();
+    console.log('Clan created:', stats?.name, 'with', stats?.dragonCount, 'dragons');
 
-  // Add 6 dragons to the clan with randomly generated attributes
-  for (let i = 0; i < 6; i++) {
-    clan.addDragon(createRandomDragon());
-  }
-
-  // Create UI
-  app.innerHTML = `
+    // Create UI
+    try {
+      const clanName = stats?.name || 'Unknown Clan';
+      const dragonCount = stats?.dragonCount || 0;
+      app.innerHTML = `
     <div class="container">
       <header>
         <h1><span class="emoji">🐉</span> <span class="gradient-text">Dragon Clan Simulator</span></h1>
@@ -35,8 +45,8 @@ function initApp() {
       <div class="main-layout">
         <div class="main-content">
           <div class="clan-info">
-            <h2>Clan: ${clan.name}</h2>
-            <p>Members: ${clan.getDragonCount()}</p>
+            <h2>Clan: ${clanName}</h2>
+            <p>Members: ${dragonCount}</p>
           </div>
 
           <div class="controls">
@@ -68,34 +78,44 @@ function initApp() {
     </div>
   `;
 
-  // Render initial state
-  renderClanInfo(clan);
-  renderDragons(clan);
-  renderRelationships(clan);
+      // Render initial state
+      console.log('Rendering clan info...');
+      renderClanInfo();
+      console.log('Rendering dragons...');
+      renderDragons();
+      console.log('Rendering relationships...');
+      renderRelationships();
+      console.log('Initial render complete');
+    } catch (renderError) {
+      console.error('Error during UI rendering:', renderError);
+      throw renderError;
+    }
   
   // Add initial event log entry
-  addEventLogEntry(`Clan "${clan.name}" initialized with ${clan.getDragonCount()} dragons`, 'info');
+  const stats2 = clanService.getClanStats();
+  addEventLogEntry(`Clan "${stats2?.name || 'Unknown'}" initialized with ${stats2?.dragonCount || 0} dragons`, 'info');
 
   // Event listeners
   let interactionCount = 0;
   let autoSimulateInterval: number | null = null;
   let isAutoSimulating = false;
 
-  function triggerSingleInteraction() {
-    if (clan.getDragonCount() < 2) {
+  async function triggerSingleInteraction() {
+    const stats = clanService.getClanStats();
+    if (!stats || stats.dragonCount < 2) {
       addEventLogEntry('Not enough dragons for interactions!', 'info');
       stopAutoSimulate();
       return;
     }
 
-    const interactions = clan.simulateInteractions(1);
+    const interactions = await clanService.simulateInteractions(1);
     interactionCount += 1;
     
     if (interactions.length > 0) {
       const interaction = interactions[0];
       addEventLogEntry(interaction.description, 'interaction');
-      renderDragons(clan);
-      renderRelationships(clan);
+      renderDragons();
+      renderRelationships();
     }
   }
 
@@ -141,17 +161,17 @@ function initApp() {
     // Random delay between 3-10 seconds (3000-10000ms)
     const delay = 3000 + Math.random() * 7000;
     
-    autoSimulateInterval = window.setTimeout(() => {
-      triggerSingleInteraction();
+    autoSimulateInterval = window.setTimeout(async () => {
+      await triggerSingleInteraction();
       if (isAutoSimulating) {
         scheduleNextInteraction();
       }
     }, delay);
   }
 
-  document.getElementById('simulate-btn')?.addEventListener('click', () => {
+  document.getElementById('simulate-btn')?.addEventListener('click', async () => {
     const count = 10;
-    const interactions = clan.simulateInteractions(count);
+    const interactions = await clanService.simulateInteractions(count);
     interactionCount += count;
     
     // Add each interaction to the event log
@@ -162,8 +182,8 @@ function initApp() {
     // Add summary
     addEventLogEntry(`Simulated ${count} interactions (${interactionCount} total)`, 'action');
     
-    renderDragons(clan);
-    renderRelationships(clan);
+    renderDragons();
+    renderRelationships();
   });
 
   document.getElementById('auto-simulate-btn')?.addEventListener('click', () => {
@@ -174,30 +194,24 @@ function initApp() {
     }
   });
 
-  document.getElementById('add-dragon-btn')?.addEventListener('click', () => {
-    const newDragon = createRandomDragon();
-    clan.addDragon(newDragon);
+  document.getElementById('add-dragon-btn')?.addEventListener('click', async () => {
+    const newDragon = await createRandomDragon();
     addEventLogEntry(`Added new dragon: ${newDragon.name} (${newDragon.element})`, 'action');
-    renderClanInfo(clan);
-    renderDragons(clan);
-    renderRelationships(clan);
+    renderClanInfo();
+    renderDragons();
+    renderRelationships();
   });
 
-  document.getElementById('reset-btn')?.addEventListener('click', () => {
+  document.getElementById('reset-btn')?.addEventListener('click', async () => {
     if (confirm('Are you sure you want to reset the clan?')) {
       stopAutoSimulate();
-      clan.clear();
-      // Generate a new clan name
-      clan.name = generateClanName();
-      // Add 6 new dragons
-      for (let i = 0; i < 6; i++) {
-        clan.addDragon(createRandomDragon());
-      }
+      await clanService.resetClan(6);
       interactionCount = 0;
-      addEventLogEntry(`Clan reset: ${clan.name} with ${clan.getDragonCount()} new dragons`, 'action');
-      renderClanInfo(clan);
-      renderDragons(clan);
-      renderRelationships(clan);
+      const stats = clanService.getClanStats();
+      addEventLogEntry(`Clan reset: ${stats?.name || 'Unknown'} with ${stats?.dragonCount || 0} new dragons`, 'action');
+      renderClanInfo();
+      renderDragons();
+      renderRelationships();
     }
   });
 
@@ -208,8 +222,21 @@ function initApp() {
     }
   });
 
-  // Start auto-simulation by default
-  startAutoSimulate();
+    // Start auto-simulation by default
+    startAutoSimulate();
+  } catch (error) {
+    console.error('Error initializing app:', error);
+    const app = document.getElementById('app');
+    if (app) {
+      app.innerHTML = `
+        <div class="container">
+          <h1>Error Loading Application</h1>
+          <p>There was an error initializing the application. Please check the console for details.</p>
+          <p>Error: ${error instanceof Error ? error.message : String(error)}</p>
+        </div>
+      `;
+    }
+  }
 }
 
 function addEventLogEntry(message: string, type: 'interaction' | 'info' | 'action' = 'info') {
@@ -236,49 +263,88 @@ function addEventLogEntry(message: string, type: 'interaction' | 'info' | 'actio
   eventLog.scrollTop = 0;
 }
 
-function renderClanInfo(clan: DragonClan) {
+function renderClanInfo() {
   const clanInfo = document.querySelector('.clan-info');
   if (clanInfo) {
+    const stats = clanService.getClanStats();
     clanInfo.innerHTML = `
-      <h2>Clan: ${clan.name}</h2>
-      <p>Members: ${clan.getDragonCount()}</p>
+      <h2>Clan: ${stats?.name || 'Unknown'}</h2>
+      <p>Members: ${stats?.dragonCount || 0}</p>
     `;
   }
 }
 
-function renderDragons(clan: DragonClan) {
+function renderDragons() {
   const dragonsList = document.getElementById('dragons-list');
   if (!dragonsList) return;
 
-  const dragons = clan.getDragons();
-  dragonsList.innerHTML = dragons.map((dragon, index) => {
-    const style = dragon.character.getInteractionStyle();
-    return `
+  try {
+    const dragons = clanService.getDragons();
+    console.log('Rendering', dragons.length, 'dragons');
+    
+    // Render dragons one at a time to isolate errors
+    const htmlParts: string[] = [];
+    for (let index = 0; index < dragons.length; index++) {
+      const dragon = dragons[index];
+      if (!dragon) {
+        console.error(`Dragon at index ${index} is null`);
+        continue;
+      }
+      console.log(`Rendering dragon ${index + 1}: ${dragon.name}`);
+      
+      // Get basic properties first (these should work)
+      const name = dragon.name;
+      const element = dragon.element;
+      const age = dragon.age;
+      const energy = dragon.energy;
+      const mood = dragon.mood;
+      const style = dragon.interactionStyle;
+      
+      // Try to get character info, but don't fail if it doesn't work
+      let characterInfo = '';
+      try {
+        console.log(`  Getting character info for ${name}...`);
+        characterInfo = clanService.getDragonCharacterInfo(index) || '';
+        console.log(`  Character info length: ${characterInfo.length}`);
+      } catch (error) {
+        console.error(`Error getting character info for dragon ${name}:`, error);
+        // Create a basic fallback
+        characterInfo = `${name}'s Details:\n  Element: ${element}\n  Age: ${age}\n  Energy: ${energy}%\n  Mood: ${mood}\n\n  Character information temporarily unavailable.`;
+      }
+    
+      const html = `
       <div class="dragon-card">
         <div class="dragon-header">
-          <h3>${dragon.name}</h3>
-          <span class="element-badge element-${dragon.element.toLowerCase()}">${dragon.element}</span>
+          <h3>${name}</h3>
+          <span class="element-badge element-${element.toLowerCase()}">${element}</span>
         </div>
         <div class="dragon-info">
-          <p><strong>Age:</strong> ${dragon.age}</p>
-          <p><strong>Energy:</strong> ${dragon.energy}%</p>
-          <p><strong>Mood:</strong> ${dragon.mood}</p>
+          <p><strong>Age:</strong> ${age}</p>
+          <p><strong>Energy:</strong> ${energy}%</p>
+          <p><strong>Mood:</strong> ${mood}</p>
           <p><strong>Style:</strong> ${style}</p>
         </div>
         <details class="dragon-details">
           <summary>Character Details</summary>
-          <pre>${dragon.getCharacterInfo()}</pre>
+          <pre>${characterInfo || 'Character information unavailable'}</pre>
         </details>
       </div>
     `;
-  }).join('');
+      htmlParts.push(html);
+    }
+    
+    dragonsList.innerHTML = htmlParts.join('');
+  } catch (error) {
+    console.error('Error in renderDragons:', error);
+    dragonsList.innerHTML = '<p>Error rendering dragons. Check console for details.</p>';
+  }
 }
 
-function renderRelationships(clan: DragonClan) {
+function renderRelationships() {
   const relationshipsList = document.getElementById('relationships-list');
   if (!relationshipsList) return;
 
-  const dragons = clan.getDragons();
+  const dragons = clanService.getDragons();
   if (dragons.length < 2) {
     relationshipsList.innerHTML = '<p>Not enough dragons to show relationships.</p>';
     return;
@@ -291,17 +357,22 @@ function renderRelationships(clan: DragonClan) {
   });
   html += '</tr></thead><tbody>';
 
-  dragons.forEach((dragon) => {
+  dragons.forEach((dragon, dragon1Index) => {
     html += `<tr><th>${dragon.name}</th>`;
-    dragons.forEach((other) => {
-      if (dragon === other) {
+    dragons.forEach((other, dragon2Index) => {
+      if (dragon1Index === dragon2Index) {
         html += '<td class="self">—</td>';
       } else {
-        const opinion = dragon.getOpinionOf(other);
-        const relationship = dragon.getRelationshipInfo(other);
-        const status = relationship.split(' ')[0]; // Get status word
-        const className = opinion > 50 ? 'positive' : opinion < -50 ? 'negative' : 'neutral';
-        html += `<td class="${className}" title="${relationship}">${opinion}</td>`;
+        try {
+          const opinion = clanService.getOpinion(dragon1Index, dragon2Index) || 0;
+          const relationship = clanService.getRelationshipInfo(dragon1Index, dragon2Index) || 'Unknown relationship';
+          const status = relationship.split(' ')[0]; // Get status word
+          const className = opinion > 50 ? 'positive' : opinion < -50 ? 'negative' : 'neutral';
+          html += `<td class="${className}" title="${relationship}">${opinion}</td>`;
+        } catch (error) {
+          console.error(`Error getting relationship between ${dragon.name} and ${other.name}:`, error);
+          html += '<td class="neutral" title="Error loading relationship">0</td>';
+        }
       }
     });
     html += '</tr>';
@@ -313,8 +384,7 @@ function renderRelationships(clan: DragonClan) {
 
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initApp);
+  document.addEventListener('DOMContentLoaded', () => initApp().catch(console.error));
 } else {
-  initApp();
+  initApp().catch(console.error);
 }
-

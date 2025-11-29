@@ -6,19 +6,18 @@ A 2D simulation game where you manage a clan of dragons. Play in your browser!
 
 ## 🚀 Quick Start
 
+### Prerequisites
+- Node.js >= 18.0.0
+- Rust (for building WebAssembly backend)
+  - Install from https://rustup.rs/
+  - `wasm-pack` will be installed automatically if needed
+
 ### Development
 ```bash
 npm install
 npm run dev
 ```
-Opens at http://localhost:3000
-
-### Console/CLI Mode
-```bash
-npm install
-npm run build:cli  # Build TypeScript
-npm run start:cli  # Run CLI version
-```
+This will build the Rust WebAssembly backend and start the dev server at http://localhost:3000
 
 ## 📦 Deployment
 
@@ -47,35 +46,47 @@ See [docs/web-deployment.md](docs/web-deployment.md) for detailed deployment ins
 - [Web Deployment](docs/web-deployment.md) - Deployment instructions
 - [Character System](docs/character.md) - Character traits and values
 - [Value System](docs/value-system.md) - How values affect interactions
+- [Rust Service Implementation](docs/rust-service-implementation.md) - Service layer architecture
+- [Service Layer Architecture](docs/service-layer-architecture.md) - Architecture overview
 
 ## 🏗️ Project Structure
 
 ```
 src/
-  ├── app.ts         # Web frontend
-  ├── app.css        # Styles
-  ├── index.ts       # CLI entry point
-  ├── dragon.ts      # Dragon entity class
-  ├── clan.ts        # Clan management
-  ├── character.ts   # Character system
-  ├── values.ts      # Value system
-  └── ...
+  ├── app.ts              # Web frontend
+  ├── app.css             # Styles
+  ├── wasm-wrapper.ts     # TypeScript wrapper for Rust/WASM backend
+  └── services/
+      └── clan-service.ts  # Optional TypeScript service layer with events
 
-index.html           # Web entry point
-vite.config.ts       # Vite configuration
+rust/
+  ├── src/
+  │   ├── lib.rs          # Main Rust entry point
+  │   ├── clan_service.rs  # ClanService - main interface (hides internal objects)
+  │   ├── dragon.rs        # Dragon entity (internal, not exported)
+  │   ├── clan.rs          # Clan management (internal, not exported)
+  │   ├── character.rs     # Character system
+  │   ├── values.rs        # Value system
+  │   ├── relationship.rs  # Relationship management
+  │   └── name_generator.rs # Name generation
+  └── pkg/                 # Generated WASM package
+
+index.html              # Web entry point
+vite.config.ts          # Vite configuration
 ```
 
 ## 🛠️ Technology Stack
 
-- **TypeScript** - Type-safe JavaScript
+- **Rust** - Backend logic compiled to WebAssembly for performance
+- **TypeScript** - Type-safe JavaScript frontend
 - **Vite** - Fast build tool and dev server
+- **wasm-pack** - Build tool for Rust WebAssembly
 
 ## 📝 Scripts
 
-- `npm run dev` - Start web dev server
-- `npm run build` - Build for web
+- `npm run build:wasm` - Build Rust WebAssembly backend
+- `npm run dev` - Build WASM and start web dev server
+- `npm run build` - Build WASM and build for web production
 - `npm run preview` - Preview production build
-- `npm run build:cli` - Build TypeScript for CLI
-- `npm run start:cli` - Run CLI version
-- `npm run dev:cli` - Watch mode for CLI development
+- `npm run clean` - Clean build artifacts
 
