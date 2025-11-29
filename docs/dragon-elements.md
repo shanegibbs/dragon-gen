@@ -9,6 +9,19 @@ Elements influence:
 - **Values**: Elements influence a dragon's core values and philosophical outlook
 - **Naming Patterns**: Each element has characteristic name prefixes and suffixes
 
+## Summary Table
+
+Quick reference table of all elements, their trait tendencies, and value tendencies:
+
+| Element | Personality Traits | Values | Philosophy |
+|---------|-------------------|--------|------------|
+| 🔥 **Fire** | Aggression (axis +20), Dominance (+15) | Power (axis +20), Achievement (axis +15), Honor (+15) | Strength and success through personal excellence |
+| 💧 **Water** | Patience (axis -20), Friendliness (+15) | Harmony (axis -20), Protection (axis -15), Wisdom (+10) | Balance and care for the collective |
+| 🌍 **Earth** | Patience (axis -25), Curiosity (-15) | Tradition (axis +25), Honor (+15) | Respect for the old ways and steadfast principles |
+| 💨 **Wind** | Curiosity (+20), Playfulness (+15) | Freedom (axis +25), Growth (axis -20) | Embrace change and personal autonomy |
+| ⚡ **Lightning** | Aggression (axis +15), Curiosity (+20) | Achievement (axis +20), Power (axis +15) | Progress through strength and innovation |
+| ❄️ **Ice** | Sociability (-20), Patience (axis -25) | Wisdom (+25), Harmony (axis -15), Community (axis -15) | Understanding through contemplation and balance |
+
 ## The Six Elements
 
 ### 🔥 Fire Dragons
