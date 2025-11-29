@@ -15,12 +15,12 @@ Quick reference table of all elements, their trait tendencies, and value tendenc
 
 | Element | Personality Traits | Values | Philosophy |
 |---------|-------------------|--------|------------|
-| 🔥 **Fire** | Aggression (axis +20), Dominance (+15) | Power (axis +20), Achievement (axis +15), Honor (+15) | Strength and success through personal excellence |
-| 💧 **Water** | Patience (axis -20), Friendliness (+15) | Harmony (axis -20), Protection (axis -15), Wisdom (+10) | Balance and care for the collective |
-| 🌍 **Earth** | Patience (axis -25), Curiosity (-15) | Tradition (axis +25), Honor (+15) | Respect for the old ways and steadfast principles |
-| 💨 **Wind** | Curiosity (+20), Playfulness (+15) | Freedom (axis +25), Growth (axis -20) | Embrace change and personal autonomy |
-| ⚡ **Lightning** | Aggression (axis +15), Curiosity (+20) | Achievement (axis +20), Power (axis +15) | Progress through strength and innovation |
-| ❄️ **Ice** | Sociability (-20), Patience (axis -25) | Wisdom (+25), Harmony (axis -15), Community (axis -15) | Understanding through contemplation and balance |
+| 🔥 **Fire** | Aggression (+20), Dominance (+15) | Power (+20), Achievement (+15), Honor (+15) | Strength and success through personal excellence |
+| 💧 **Water** | Patience (+20), Friendliness (+15) | Harmony (+20), Protection (+15), Wisdom (+10) | Balance and care for the collective |
+| 🌍 **Earth** | Patience (+25), Curiosity (-15) | Tradition (+25), Honor (+15) | Respect for the old ways and steadfast principles |
+| 💨 **Wind** | Curiosity (+20), Playfulness (+15) | Freedom (+25), Growth (+20) | Embrace change and personal autonomy |
+| ⚡ **Lightning** | Aggression (+15), Curiosity (+20) | Achievement (+20), Power (+15) | Progress through strength and innovation |
+| ❄️ **Ice** | Sociability (-20), Patience (+25) | Wisdom (+25), Harmony (+15), Community (-15) | Understanding through contemplation and balance |
 
 ## The Six Elements
 
@@ -29,13 +29,13 @@ Quick reference table of all elements, their trait tendencies, and value tendenc
 **Philosophy**: Strength and success through personal excellence
 
 **Personality Tendencies**:
-- Higher aggression (axis +20)
-- Higher dominance (+15)
+- Higher Aggression (+20)
+- Higher Dominance (+15)
 - **Typical Style**: Often aggressive or serious, natural leaders
 
 **Value Tendencies**:
-- Higher Power (axis +20)
-- Higher Achievement (axis +15)
+- Higher Power (+20)
+- Higher Achievement (+15)
 - Higher Honor (+15)
 - **Typical Values**: Power, Achievement, Honor
 
@@ -54,13 +54,13 @@ Fire dragons are driven by ambition and strength. They value personal achievemen
 **Philosophy**: Balance and care for the collective
 
 **Personality Tendencies**:
-- Higher patience (axis -20)
-- Higher friendliness (+15)
+- Higher Patience (+20)
+- Higher Friendliness (+15)
 - **Typical Style**: Usually friendly or serious, calm and patient
 
 **Value Tendencies**:
-- Higher Harmony (axis -20)
-- Higher Protection (axis -15)
+- Higher Harmony (+20)
+- Higher Protection (+15)
 - Higher Wisdom (+10)
 - **Typical Values**: Harmony, Protection, Community
 
@@ -79,12 +79,12 @@ Water dragons prioritize peace, harmony, and the welfare of others. They are pat
 **Philosophy**: Respect for the old ways and steadfast principles
 
 **Personality Tendencies**:
-- Higher patience (axis -25)
-- Lower curiosity (-15)
+- Higher Patience (+25)
+- Lower Curiosity (-15)
 - **Typical Style**: Usually serious, steady and reliable
 
 **Value Tendencies**:
-- Higher Tradition (axis +25)
+- Higher Tradition (+25)
 - Higher Honor (+15)
 - **Typical Values**: Tradition, Honor, Stability
 
@@ -103,13 +103,13 @@ Earth dragons are the guardians of tradition and stability. They value honor and
 **Philosophy**: Embrace change and personal autonomy
 
 **Personality Tendencies**:
-- Higher curiosity (+20)
-- Higher playfulness (+15)
+- Higher Curiosity (+20)
+- Higher Playfulness (+15)
 - **Typical Style**: Often playful or curious, energetic and exploratory
 
 **Value Tendencies**:
-- Higher Freedom (axis +25)
-- Higher Growth (axis -20)
+- Higher Freedom (+25)
+- Higher Growth (+20)
 - **Typical Values**: Freedom, Growth, Exploration
 
 **Name Patterns**:
@@ -127,13 +127,13 @@ Wind dragons are free spirits who value independence and exploration. They are c
 **Philosophy**: Progress through strength and innovation
 
 **Personality Tendencies**:
-- Higher aggression (axis +15)
-- Higher curiosity (+20)
+- Higher Aggression (+15)
+- Higher Curiosity (+20)
 - **Typical Style**: Often aggressive or curious, intense and dynamic
 
 **Value Tendencies**:
-- Higher Achievement (axis +20)
-- Higher Power (axis +15)
+- Higher Achievement (+20)
+- Higher Power (+15)
 - **Typical Values**: Achievement, Power, Growth
 
 **Name Patterns**:
@@ -151,14 +151,14 @@ Lightning dragons combine intensity with innovation. They are driven to achieve 
 **Philosophy**: Understanding through contemplation and balance
 
 **Personality Tendencies**:
-- Lower sociability (-20)
-- Higher patience (axis -25)
+- Lower Sociability (-20)
+- Higher Patience (+25)
 - **Typical Style**: Often shy or serious, reserved and patient
 
 **Value Tendencies**:
 - Higher Wisdom (+25)
-- Higher Harmony (axis -15)
-- Lower Community (axis -15)
+- Higher Harmony (+15)
+- Lower Community (-15)
 - **Typical Values**: Wisdom, Harmony, Independence
 
 **Name Patterns**:
