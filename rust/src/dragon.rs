@@ -1,7 +1,7 @@
 use wasm_bindgen::prelude::*;
 use crate::character::{DragonCharacter, generate_random_character};
 use crate::relationship::Relationship;
-use crate::values::calculate_value_alignment;
+use crate::communication::{generate_communication, process_communication, Communication, CommunicationResponse};
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -130,23 +130,27 @@ impl Dragon {
         self.mood.clone()
     }
 
-    fn get_relationship(&mut self, other: &Dragon) -> &mut Relationship {
+    /// Get existing relationship, or None if no relationship exists yet
+    /// Relationships are only created through actual interactions
+    fn get_relationship(&self, other: &Dragon) -> Option<&Relationship> {
         let other_name = other.name.clone();
-        if !self.relationships.contains_key(&other_name) {
-            let compatibility = self.character.get_compatibility_with(&other.character, other.element);
-            let initial_opinion = (compatibility as f64 * 0.3) as i32;
-            let target_opinion = (compatibility as f64 * 0.7) as i32;
-            self.relationships.insert(
-                other_name.clone(),
-                Relationship::new(initial_opinion, target_opinion),
-            );
-        }
-        self.relationships.get_mut(&other_name).unwrap()
+        self.relationships.get(&other_name)
     }
 
-    pub fn get_opinion_of(&mut self, other: &Dragon) -> i32 {
-        let relationship = self.get_relationship(other);
-        relationship.opinion()
+    /// Get mutable relationship, creating it only if it doesn't exist
+    /// This should only be called during actual interactions
+    fn get_or_create_relationship(&mut self, other: &Dragon) -> &mut Relationship {
+        let other_name = other.name.clone();
+        self.relationships.entry(other_name.clone())
+            .or_insert_with(|| Relationship::new())
+    }
+
+    /// Get opinion of another dragon
+    /// Returns 0 (neutral) if no relationship exists yet
+    pub fn get_opinion_of(&self, other: &Dragon) -> i32 {
+        self.get_relationship(other)
+            .map(|r| r.opinion())
+            .unwrap_or(0)
     }
 
     pub fn update_opinion_from_interaction(
@@ -155,201 +159,65 @@ impl Dragon {
         interaction_description: &str,
         base_opinion_change: i32,
     ) {
-        let compatibility = self.character.get_compatibility_with(&other.character, other.element);
-        let relationship = self.get_relationship(other);
-        let interaction_count = relationship.interaction_count();
-        let decay_factor = (1.0 - (interaction_count as f64 * 0.05)).max(0.3);
-        let adjusted_change = (base_opinion_change as f64 * decay_factor) as i32;
-        relationship.update_opinion(adjusted_change, interaction_description, Some(compatibility));
+        let relationship = self.get_or_create_relationship(other);
+        relationship.update_opinion(base_opinion_change, interaction_description);
     }
 
+    /// Generate a communication to send to another dragon
+    /// The communication is based on this dragon's values and traits
+    /// Internal method - not exposed to WASM
+    fn communicate_with(&self, other: &Dragon) -> Communication {
+        let existing_opinion = self.get_opinion_of(other);
+        let sender_name = self.name.clone();
+        let receiver_name = other.name.clone();
+        generate_communication(
+            self.character.values(),
+            self.character.traits(),
+            &sender_name,
+            &receiver_name,
+            self.element.as_str(),
+            other.element.as_str(),
+            existing_opinion,
+        )
+    }
+
+    /// Interact with another dragon using the communication system
     pub fn interact_with(&mut self, other: &Dragon) -> InteractionResult {
-        let existing_opinion = {
-            let relationship = self.get_relationship(other);
-            relationship.opinion()
-        };
-        let compatibility = self.character.get_compatibility_with(&other.character, other.element);
-        let my_style = self.character.get_interaction_style();
-        let other_style = other.character.get_interaction_style();
-        let value_alignment = calculate_value_alignment(&self.character.values(), &other.character.values());
+        // Generate communication from this dragon
+        let communication = self.communicate_with(other);
+        
+        // Process the communication from the other dragon's perspective
+        // We need to clone to avoid borrow checker issues, then update the original
+        let other_name = other.name.clone();
+        let sender_name = self.name.clone();
+        let existing_opinion = self.get_opinion_of(other);
+        let response = process_communication(
+            &communication,
+            other.character.values(),
+            other.character.traits(),
+            &other_name,
+            &sender_name,
+            existing_opinion,
+        );
 
-        let opinion_modifier = existing_opinion as f64 / 100.0;
-        let adjusted_compatibility = compatibility as f64 + (opinion_modifier * 30.0);
-        let value_modifier = value_alignment as f64 / 100.0;
-        let final_compatibility = adjusted_compatibility + (value_modifier * 20.0);
+        // Update this dragon's opinion based on the response
+        // The sender's opinion changes based on how their communication was received
+        let sender_opinion_change = calculate_sender_opinion_change(&communication, &response);
+        let relationship = self.get_or_create_relationship(other);
+        let description = format!("{}: {} | {}: {}", 
+            sender_name, communication.content,
+            other_name, response.response_content
+        );
+        relationship.update_opinion(sender_opinion_change, &description);
 
-        let my_values = self.character.values();
-        let other_values = other.character.values();
-        let mut value_based_interaction = false;
-        let mut description = String::new();
-        let mut opinion_change = 0;
+        // Create combined description for display
+        let full_description = format!("{} → {}: {} | {} → {}: {} ({})",
+            sender_name, other_name, communication.content,
+            other_name, sender_name, response.response_content,
+            response.interpretation
+        );
 
-        // Value-based interactions
-        if my_values.honor > 70 && other_values.honor > 70 && final_compatibility > -20.0 {
-            description = format!(
-                "{} ({}) and {} ({}) make a solemn promise together - their shared honor creates a bond",
-                self.name, self.element.as_str(), other.name, other.element.as_str()
-            );
-            opinion_change = 10 + if value_alignment > 50 { 5 } else { 0 };
-            value_based_interaction = true;
-        } else if my_values.community > 70 && other_values.community > 70 && final_compatibility > 0.0 {
-            description = format!(
-                "{} ({}) and {} ({}) work together for the clan's benefit - their shared values strengthen their bond",
-                self.name, self.element.as_str(), other.name, other.element.as_str()
-            );
-            opinion_change = 8 + if value_alignment > 50 { 4 } else { 0 };
-            value_based_interaction = true;
-        } else if my_values.harmony > 70 && other_values.harmony > 70 && final_compatibility > -30.0 {
-            description = format!(
-                "{} ({}) and {} ({}) seek peaceful resolution to a disagreement - their shared value for harmony prevails",
-                self.name, self.element.as_str(), other.name, other.element.as_str()
-            );
-            opinion_change = 6 + if value_alignment > 50 { 3 } else { 0 };
-            value_based_interaction = true;
-        } else if my_values.wisdom > 70 && other_values.wisdom > 70 && final_compatibility > 0.0 {
-            description = format!(
-                "{} ({}) and {} ({}) engage in deep philosophical discussion - their shared wisdom creates understanding",
-                self.name, self.element.as_str(), other.name, other.element.as_str()
-            );
-            opinion_change = 7 + if value_alignment > 50 { 3 } else { 0 };
-            value_based_interaction = true;
-        } else if value_alignment < -30 && final_compatibility < 20.0 {
-            if my_values.freedom > 70 && other_values.community > 70 {
-                description = format!(
-                    "{} ({}) and {} ({}) disagree on priorities - individual freedom vs collective good",
-                    self.name, self.element.as_str(), other.name, other.element.as_str()
-                );
-                opinion_change = -5;
-                value_based_interaction = true;
-            } else if my_values.tradition > 70 && other_values.growth > 70 {
-                description = format!(
-                    "{} ({}) and {} ({}) debate the value of tradition versus progress",
-                    self.name, self.element.as_str(), other.name, other.element.as_str()
-                );
-                opinion_change = -4;
-                value_based_interaction = true;
-            } else if my_values.power > 70 && other_values.harmony > 70 {
-                description = format!(
-                    "{} ({}) and {} ({}) clash over approaches - one seeks influence, the other seeks peace",
-                    self.name, self.element.as_str(), other.name, other.element.as_str()
-                );
-                opinion_change = -6;
-                value_based_interaction = true;
-            }
-        }
-
-        // Very incompatible interactions
-        if !value_based_interaction && final_compatibility < -50.0 {
-            if self.character.traits().aggression > 70 {
-                description = format!(
-                    "{} ({}) confronts {} ({}) - they don't get along",
-                    self.name, self.element.as_str(), other.name, other.element.as_str()
-                );
-                opinion_change = -15 - if existing_opinion < 0 { 5 } else { 0 };
-            } else if other.character.traits().aggression > 70 {
-                description = format!(
-                    "{} ({}) avoids {} ({}) - {} seems hostile",
-                    self.name, self.element.as_str(), other.name, other.element.as_str(), other.name
-                );
-                opinion_change = -10;
-            } else {
-                description = format!(
-                    "{} ({}) and {} ({}) keep their distance - awkward silence",
-                    self.name, self.element.as_str(), other.name, other.element.as_str()
-                );
-                opinion_change = -5;
-            }
-        }
-        // Incompatible but not hostile
-        else if !value_based_interaction && final_compatibility < 0.0 {
-            use rand::Rng;
-            let mut rng = rand::thread_rng();
-            let neutral_interactions = vec![
-                format!("{} ({}) exchanges a brief nod with {} ({})", self.name, self.element.as_str(), other.name, other.element.as_str()),
-                format!("{} ({}) and {} ({}) have a polite but distant conversation", self.name, self.element.as_str(), other.name, other.element.as_str()),
-                format!("{} ({}) acknowledges {} ({}) but doesn't engage much", self.name, self.element.as_str(), other.name, other.element.as_str()),
-            ];
-            description = neutral_interactions[rng.gen_range(0..neutral_interactions.len())].clone();
-            opinion_change = -2 + rng.gen_range(0..4);
-        }
-        // Compatible interactions
-        else if !value_based_interaction && final_compatibility > 50.0 {
-            if my_style == "playful" && other_style == "playful" {
-                description = format!(
-                    "{} ({}) and {} ({}) play an energetic game together!",
-                    self.name, self.element.as_str(), other.name, other.element.as_str()
-                );
-                opinion_change = 12 + if existing_opinion > 0 { 3 } else { 0 };
-            } else if my_style == "curious" || other_style == "curious" {
-                description = format!(
-                    "{} ({}) and {} ({}) explore something interesting together",
-                    self.name, self.element.as_str(), other.name, other.element.as_str()
-                );
-                opinion_change = 10;
-            } else if my_style == "friendly" || other_style == "friendly" {
-                description = format!(
-                    "{} ({}) and {} ({}) share a warm, friendly conversation",
-                    self.name, self.element.as_str(), other.name, other.element.as_str()
-                );
-                opinion_change = 8;
-            } else {
-                description = format!(
-                    "{} ({}) and {} ({}) collaborate effectively on a task",
-                    self.name, self.element.as_str(), other.name, other.element.as_str()
-                );
-                opinion_change = 7;
-            }
-        }
-        // Moderate compatibility
-        else if !value_based_interaction {
-            use rand::Rng;
-            let mut rng = rand::thread_rng();
-            if my_style == "shy" || other_style == "shy" {
-                let shy_interactions = vec![
-                    format!("{} ({}) tentatively approaches {} ({})", self.name, self.element.as_str(), other.name, other.element.as_str()),
-                    format!("{} ({}) and {} ({}) have a quiet conversation", self.name, self.element.as_str(), other.name, other.element.as_str()),
-                ];
-                description = shy_interactions[rng.gen_range(0..shy_interactions.len())].clone();
-                opinion_change = 3 + rng.gen_range(0..3);
-            } else if my_style == "aggressive" && final_compatibility > 0.0 {
-                description = format!(
-                    "{} ({}) challenges {} ({}) to a friendly competition",
-                    self.name, self.element.as_str(), other.name, other.element.as_str()
-                );
-                opinion_change = 5;
-            } else {
-                let moderate_interactions = vec![
-                    format!("{} ({}) greets {} ({})", self.name, self.element.as_str(), other.name, other.element.as_str()),
-                    format!("{} ({}) shares a story with {} ({})", self.name, self.element.as_str(), other.name, other.element.as_str()),
-                    format!("{} ({}) and {} ({}) chat about their day", self.name, self.element.as_str(), other.name, other.element.as_str()),
-                    format!("{} ({}) helps {} ({}) with something", self.name, self.element.as_str(), other.name, other.element.as_str()),
-                ];
-
-                if self.element == DragonElement::Fire && other.element == DragonElement::Water && final_compatibility > 20.0 {
-                    description = format!(
-                        "{} (Fire) and {} (Water) have an interesting elemental discussion",
-                        self.name, other.name
-                    );
-                    opinion_change = 6;
-                } else if self.element == DragonElement::Earth && other.element == DragonElement::Wind && final_compatibility > 20.0 {
-                    description = format!(
-                        "{} (Earth) and {} (Wind) collaborate on a project",
-                        self.name, other.name
-                    );
-                    opinion_change = 6;
-                } else {
-                    description = moderate_interactions[rng.gen_range(0..moderate_interactions.len())].clone();
-                    opinion_change = 2 + rng.gen_range(0..4);
-                }
-            }
-        }
-
-        {
-            let relationship = self.get_relationship(other);
-            relationship.update_opinion(opinion_change, &description, Some(compatibility));
-        }
-
-        InteractionResult::new(description, opinion_change)
+        InteractionResult::new(full_description, response.opinion_change)
     }
 
     pub fn rest(&mut self) {
@@ -413,19 +281,43 @@ impl Dragon {
         )
     }
 
-    pub fn get_relationship_info(&mut self, other: &Dragon) -> String {
-        let relationship = self.get_relationship(other);
-        let status = relationship.get_relationship_status();
-        let description = relationship.get_relationship_description();
-        format!(
-            "{} {} ({}/100, {} interactions)",
-            status, description, relationship.opinion(), relationship.interaction_count()
-        )
+    pub fn get_relationship_info(&self, other: &Dragon) -> String {
+        if let Some(relationship) = self.get_relationship(other) {
+            let status = relationship.get_relationship_status();
+            let description = relationship.get_relationship_description();
+            format!(
+                "{} {} ({}/100, {} interactions)",
+                status, description, relationship.opinion(), relationship.interaction_count()
+            )
+        } else {
+            "😐 neutral (0/100, 0 interactions)".to_string()
+        }
     }
 
     #[wasm_bindgen]
     pub fn get_interaction_style(&self) -> String {
         self.character.get_interaction_style()
+    }
+}
+
+/// Calculate how the sender's opinion changes based on the response to their communication
+fn calculate_sender_opinion_change(_communication: &Communication, response: &CommunicationResponse) -> i32 {
+    use crate::communication::CommunicationTone;
+    // If the response is positive, the sender feels good about the communication
+    // If negative, the sender may feel rejected or misunderstood
+    match response.response_tone {
+        CommunicationTone::Positive | CommunicationTone::Warm => {
+            // Positive response makes sender feel good
+            (response.opinion_change as f64 * 0.5) as i32 + 2
+        }
+        CommunicationTone::Negative | CommunicationTone::Challenging => {
+            // Negative response makes sender feel bad
+            (response.opinion_change as f64 * 0.3) as i32 - 2
+        }
+        _ => {
+            // Neutral response has minimal impact on sender
+            (response.opinion_change as f64 * 0.2) as i32
+        }
     }
 }
 

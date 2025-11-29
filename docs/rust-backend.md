@@ -11,8 +11,9 @@ The Rust backend consists of several modules that handle different aspects of th
 ### Rust Modules
 
 - **`dragon.rs`** - Dragon entity, interactions, and relationship management
-- **`character.rs`** - Character traits, preferences, and compatibility calculations
-- **`values.rs`** - Dragon values and value alignment calculations
+- **`character.rs`** - Character traits and interaction styles
+- **`values.rs`** - Dragon values generation
+- **`communication.rs`** - Communication generation and processing system
 - **`relationship.rs`** - Relationship state and opinion tracking
 - **`clan.rs`** - Clan management and interaction simulation
 - **`name_generator.rs`** - Name generation for dragons and clans

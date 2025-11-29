@@ -350,14 +350,16 @@ impl ClanService {
     }
 
     /// Get relationship info between two dragons
-    pub fn get_relationship_info(&mut self, dragon1_index: usize, dragon2_index: usize) -> Option<String> {
-        let clan = self.clan.as_mut()?;
+    /// Returns neutral relationship info if no relationship exists yet
+    pub fn get_relationship_info(&self, dragon1_index: usize, dragon2_index: usize) -> Option<String> {
+        let clan = self.clan.as_ref()?;
         clan.get_relationship_info_by_indices(dragon1_index, dragon2_index)
     }
 
     /// Get opinion of dragon1 about dragon2
-    pub fn get_opinion(&mut self, dragon1_index: usize, dragon2_index: usize) -> Option<i32> {
-        let clan = self.clan.as_mut()?;
+    /// Returns 0 if no relationship exists yet
+    pub fn get_opinion(&self, dragon1_index: usize, dragon2_index: usize) -> Option<i32> {
+        let clan = self.clan.as_ref()?;
         clan.get_opinion_by_indices(dragon1_index, dragon2_index)
     }
 

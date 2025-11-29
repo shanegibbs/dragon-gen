@@ -134,7 +134,7 @@ Each dragon element influences their base values, similar to how they influence 
 
 ## Value Compatibility
 
-Values can create compatibility or conflict between dragons:
+Values can create compatibility or conflict between dragons, but these are discovered through communication:
 
 ### Complementary Values
 - **Honor + Tradition**: Both value respect for established principles
@@ -148,25 +148,28 @@ Values can create compatibility or conflict between dragons:
 - **Power vs. Harmony**: Seeking influence vs. avoiding conflict
 - **Achievement vs. Protection**: Personal success vs. caring for others
 
-## How Values Influence Behavior
+## How Values Influence Communication
 
-1. **Opinion Formation**: Dragons form opinions of others based on value alignment. High-honor dragons respect other honorable dragons.
+1. **Communication Generation**: Dragons express their values in communications. A high-honor dragon will communicate about honor, a high-community dragon will communicate about working together.
 
-2. **Decision Making**: When dragons face choices, their values guide them. A high-community dragon will prioritize clan needs over personal desires.
+2. **Communication Processing**: When receiving a communication about a value:
+   - **Shared high value**: Receiver responds positively, opinion increases
+   - **Conflicting value**: Receiver responds negatively, opinion decreases
+   - **Neutral value**: Receiver acknowledges politely, minimal opinion change
 
-3. **Interaction Quality**: Value-aligned dragons have deeper, more meaningful interactions. Value-conflicted dragons may have respectful disagreements or fundamental conflicts.
+3. **Opinion Formation**: Dragons form opinions based on how communications align with their values. High-honor dragons respect others who express honor.
 
-4. **Relationship Development**: Shared values create stronger bonds. Conflicting values may create interesting dynamics (opposites attract) or fundamental incompatibility.
+4. **Relationship Development**: Shared values discovered through communication create stronger bonds. Conflicting values discovered through communication create tension.
 
-5. **Conflict Resolution**: Dragons with high harmony values will seek peaceful solutions. Dragons with high power values may escalate conflicts.
+5. **No Pre-computation**: Dragons don't know each other's values until they communicate. Value alignment or conflict is discovered organically through interactions.
 
 ## Implementation Considerations
 
-- Values should be generated when a dragon is created, with element-based adjustments
-- Values can influence compatibility calculations alongside personality traits
-- Values can affect interaction outcomes (e.g., honor-bound dragons keep promises)
-- Values can create interesting narrative moments (e.g., a freedom-loving dragon defying a traditional leader)
-- Values may shift slightly over time based on experiences, but core values remain relatively stable
+- Values are generated when a dragon is created, with element-based adjustments
+- Values influence what communications dragons generate (high values are expressed)
+- Values influence how dragons respond to communications (shared values = positive, conflicts = negative)
+- Values create emergent relationship dynamics through the communication system
+- Values remain relatively stable throughout a dragon's life
 
 ## Example Value Profiles
 

@@ -3,41 +3,34 @@ pub struct Relationship {
     opinion: i32,
     interaction_count: u32,
     last_interaction: String,
-    target_opinion: i32,
 }
 
 impl Relationship {
-    pub fn new(initial_opinion: i32, target_opinion: i32) -> Self {
+    /// Create a new relationship starting from neutral (0)
+    /// Relationships are only created when dragons actually interact
+    pub fn new() -> Self {
         Relationship {
-            opinion: initial_opinion,
+            opinion: 0,
             interaction_count: 0,
             last_interaction: String::new(),
-            target_opinion,
         }
     }
 
-    pub fn set_target_opinion(&mut self, target: i32) {
-        self.target_opinion = target.max(-100).min(100);
-    }
-
-    pub fn update_opinion(&mut self, change: i32, interaction_description: &str, compatibility: Option<i32>) {
+    /// Update opinion based purely on interaction
+    /// No pre-computed compatibility bias - relationships emerge from interactions
+    pub fn update_opinion(&mut self, change: i32, interaction_description: &str) {
         self.interaction_count += 1;
         self.last_interaction = interaction_description.to_string();
 
-        if let Some(compatibility) = compatibility {
-            let base_target = (compatibility as f64 * 0.7) as i32;
-            self.target_opinion = base_target.max(-100).min(100);
-        }
-
-        let interaction_value = self.opinion + change;
+        // Early interactions have more impact, later interactions have diminishing returns
         let decay_factor = (10.0 / (self.interaction_count as f64 + 10.0)).min(0.5);
-        let target_weight = 0.1;
         let interaction_weight = decay_factor;
-        let current_weight = 1.0 - interaction_weight - target_weight;
+        let current_weight = 1.0 - interaction_weight;
 
+        // Apply the opinion change with decay factor
+        let interaction_value = self.opinion + change;
         self.opinion = ((self.opinion as f64 * current_weight)
-            + (interaction_value as f64 * interaction_weight)
-            + (self.target_opinion as f64 * target_weight)) as i32;
+            + (interaction_value as f64 * interaction_weight)) as i32;
 
         self.opinion = self.opinion.max(-100).min(100);
     }
