@@ -2,7 +2,6 @@
 pub struct Relationship {
     opinion: i32,
     interaction_count: u32,
-    last_interaction: String,
 }
 
 impl Relationship {
@@ -12,15 +11,13 @@ impl Relationship {
         Relationship {
             opinion: 0,
             interaction_count: 0,
-            last_interaction: String::new(),
         }
     }
 
     /// Update opinion based purely on interaction
     /// No pre-computed compatibility bias - relationships emerge from interactions
-    pub fn update_opinion(&mut self, change: i32, interaction_description: &str) {
+    pub fn update_opinion(&mut self, change: i32) {
         self.interaction_count += 1;
-        self.last_interaction = interaction_description.to_string();
 
         // Early interactions have more impact, later interactions have diminishing returns
         let decay_factor = (10.0 / (self.interaction_count as f64 + 10.0)).min(0.5);

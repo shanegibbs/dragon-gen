@@ -110,10 +110,9 @@ impl DragonClan {
         // but we need to update dragon2's relationship as well
         {
             let dragon1_clone = self.dragons[idx1].clone();
-            let description = result.description();
             // Use the opinion change from the result (which is the receiver's perspective)
             let dragon2 = &mut self.dragons[idx2];
-            dragon2.update_opinion_from_interaction(&dragon1_clone, &description, result.opinion_change());
+            dragon2.update_opinion_from_interaction(&dragon1_clone, result.opinion_change());
         }
 
         Some(result)
