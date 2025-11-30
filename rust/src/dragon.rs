@@ -82,8 +82,6 @@ pub struct Dragon {
     name: String,
     element: DragonElement,
     age: u32,
-    energy: u32,
-    mood: String,
     character: DragonCharacter,
     relationships: HashMap<String, Relationship>,
 }
@@ -99,8 +97,6 @@ impl Dragon {
             name,
             element,
             age,
-            energy: 100,
-            mood: "content".to_string(),
             character,
             relationships: HashMap::new(),
         }
@@ -119,16 +115,6 @@ impl Dragon {
     #[wasm_bindgen(getter)]
     pub fn age(&self) -> u32 {
         self.age
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn energy(&self) -> u32 {
-        self.energy
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn mood(&self) -> String {
-        self.mood.clone()
     }
 
     /// Get existing relationship, or None if no relationship exists yet
@@ -222,22 +208,13 @@ impl Dragon {
         InteractionResult::new(full_description, response.opinion_change)
     }
 
-    pub fn rest(&mut self) {
-        self.energy = (self.energy + 20).min(100);
-        if self.energy > 80 {
-            self.mood = "happy".to_string();
-        }
-    }
-
     pub fn get_info(&self) -> String {
         let style = self.character.get_interaction_style();
         format!(
-            "{} - {} Dragon, Age: {}, Energy: {}%, Mood: {}, Style: {}",
+            "{} - {} Dragon, Age: {}, Style: {}",
             self.name,
             self.element.as_str(),
             self.age,
-            self.energy,
-            self.mood,
             style
         )
     }
@@ -285,8 +262,8 @@ impl Dragon {
             .join("\n");
 
         format!(
-            "{}'s Details:\n  Element: {}\n  Age: {}\n  Energy: {}%\n  Mood: {}\n\n  Character:\n  Style: {}\n\n  Traits:\n{}\n\n  Values:\n{}",
-            self.name, self.element.as_str(), self.age, self.energy, self.mood, style, traits_str, values_str
+            "{}'s Details:\n  Element: {}\n  Age: {}\n\n  Character:\n  Style: {}\n\n  Traits:\n{}\n\n  Values:\n{}",
+            self.name, self.element.as_str(), self.age, style, traits_str, values_str
         )
     }
 
@@ -327,8 +304,6 @@ impl Dragon {
             name,
             element,
             age,
-            energy: 100,
-            mood: "content".to_string(),
             character,
             relationships: std::collections::HashMap::new(),
         }

@@ -12,8 +12,6 @@ pub struct DragonInfo {
     name: String,
     element: String,
     age: u32,
-    energy: u32,
-    mood: String,
     interaction_style: String,
 }
 
@@ -35,16 +33,6 @@ impl DragonInfo {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn energy(&self) -> u32 {
-        self.energy
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn mood(&self) -> String {
-        self.mood.clone()
-    }
-
-    #[wasm_bindgen(getter)]
     pub fn interaction_style(&self) -> String {
         self.interaction_style.clone()
     }
@@ -56,8 +44,6 @@ impl DragonInfo {
             name: dragon.name(),
             element: dragon.element(),
             age: dragon.age(),
-            energy: dragon.energy(),
-            mood: dragon.mood(),
             interaction_style: dragon.get_interaction_style(),
         }
     }
@@ -396,8 +382,6 @@ impl ClanService {
         js_sys::Reflect::set(&obj, &"name".into(), &dragon_info.name().into()).unwrap();
         js_sys::Reflect::set(&obj, &"element".into(), &dragon_info.element().into()).unwrap();
         js_sys::Reflect::set(&obj, &"age".into(), &(dragon_info.age() as u32).into()).unwrap();
-        js_sys::Reflect::set(&obj, &"energy".into(), &(dragon_info.energy() as u32).into()).unwrap();
-        js_sys::Reflect::set(&obj, &"mood".into(), &dragon_info.mood().into()).unwrap();
         js_sys::Reflect::set(&obj, &"interactionStyle".into(), &dragon_info.interaction_style().into()).unwrap();
         obj.into()
     }

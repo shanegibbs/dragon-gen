@@ -314,8 +314,6 @@ function renderDragons() {
       const name = dragon.name;
       const element = dragon.element;
       const age = dragon.age;
-      const energy = dragon.energy;
-      const mood = dragon.mood;
       const style = dragon.interactionStyle;
       
       // Try to get character info, but don't fail if it doesn't work
@@ -327,7 +325,7 @@ function renderDragons() {
       } catch (error) {
         console.error(`Error getting character info for dragon ${name}:`, error);
         // Create a basic fallback
-        characterInfo = `${name}'s Details:\n  Element: ${element}\n  Age: ${age}\n  Energy: ${energy}%\n  Mood: ${mood}\n\n  Character information temporarily unavailable.`;
+        characterInfo = `${name}'s Details:\n  Element: ${element}\n  Age: ${age}\n\n  Character information temporarily unavailable.`;
       }
     
       const html = `
@@ -338,8 +336,6 @@ function renderDragons() {
         </div>
         <div class="dragon-info">
           <p><strong>Age:</strong> ${age}</p>
-          <p><strong>Energy:</strong> ${energy}%</p>
-          <p><strong>Mood:</strong> ${mood}</p>
           <p><strong>Style:</strong> ${style}</p>
         </div>
         <details class="dragon-details">

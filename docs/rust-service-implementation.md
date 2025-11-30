@@ -72,7 +72,7 @@ For general information about the Rust backend architecture, see [rust-backend.m
 
 3. **DragonInfo** - Read-only dragon data structure
    - Exposed to TypeScript instead of `Dragon`
-   - Contains: name, element, age, energy, mood, interactionStyle
+   - Contains: name, element, age, interactionStyle
 
 4. **InteractionEvent** - Interaction results with indices
    - Contains: description, dragon1Index, dragon2Index, opinionChange

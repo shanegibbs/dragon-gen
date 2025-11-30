@@ -34,8 +34,6 @@ export interface DragonInfo {
   name: string;
   element: DragonElement;
   age: number;
-  energy: number;
-  mood: string;
   interactionStyle: string;
 }
 
@@ -189,8 +187,6 @@ export class ClanService {
       name: wasmDragon.name, // Property, not method
       element: wasmDragon.element as DragonElement, // Property, not method
       age: wasmDragon.age, // Property, not method
-      energy: wasmDragon.energy, // Property, not method
-      mood: wasmDragon.mood, // Property, not method
       interactionStyle: wasmDragon.interaction_style, // Property, not method
     };
   }

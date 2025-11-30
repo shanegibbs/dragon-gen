@@ -8,7 +8,6 @@ This document proposes new types of interactions and actions that dragons can ta
 2. **Trait-Expressive**: Actions should reflect how a dragon behaves (friendly, aggressive, curious, etc.)
 3. **Relationship Impact**: Actions should affect relationships in meaningful ways
 4. **Emergent Dynamics**: Actions should create interesting, emergent social situations
-5. **Energy/Mood Effects**: Actions can affect dragon state (energy, mood) to create trade-offs
 
 ## Proposed Action Categories
 
@@ -48,7 +47,7 @@ This document proposes new types of interactions and actions that dragons can ta
 
 - **Meditate on Philosophy**: High-wisdom dragons engage in deep contemplation
   - Expresses: Wisdom value, Patience trait
-  - Effect: May improve mood, gain insights
+  - Effect: May gain insights, deepen understanding
   - Response: Other wise dragons may join (+6 opinion), others respect the practice (+3 opinion)
   - Example: "Aurora (Water) meditates on the nature of harmony, inviting others to contemplate"
 
@@ -347,16 +346,9 @@ These actions express both values and traits simultaneously, creating richer cha
 ### Action Selection
 - Dragons should choose actions based on their highest values and strongest traits
 - Actions can be triggered by:
-  - Dragon's internal state (high energy, good mood)
   - Situational context (conflict, group activity, opportunity)
   - Relationship state (wanting to strengthen bonds, resolve conflicts)
   - Random chance (dragons act on their values/traits periodically)
-
-### Energy and Mood Effects
-- Some actions consume energy (challenges, competitions, defending)
-- Some actions restore energy (resting, meditating, social bonding)
-- Actions can affect mood (successful actions improve mood, failures may lower it)
-- High-energy dragons may be more likely to take active actions
 
 ### Relationship Impact
 - Actions should have more significant relationship impacts than simple communication
@@ -422,7 +414,6 @@ To implement these actions:
 2. **Action Generation**: Create functions to generate actions based on values/traits
 3. **Action Processing**: Create functions to process actions and determine responses
 4. **State Management**: Track ongoing actions (promises, mentorship, protection)
-5. **Energy/Mood Integration**: Actions should affect dragon state
-6. **UI Integration**: Display actions in a meaningful way
-7. **Testing**: Ensure actions create interesting, emergent dynamics
+5. **UI Integration**: Display actions in a meaningful way
+6. **Testing**: Ensure actions create interesting, emergent dynamics
 
